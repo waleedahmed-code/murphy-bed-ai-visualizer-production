@@ -33,6 +33,18 @@ function cleanText(value, maxLength = 140) {
     .slice(0, maxLength);
 }
 
+function arrayBufferToBase64(buffer) {
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  let binary = "";
+
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+  }
+
+  return btoa(binary);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -104,10 +116,11 @@ export default {
     ].filter(Boolean).join(" ");
 
     try {
-      const source = new Uint8Array(await image.arrayBuffer());
+      const source = arrayBufferToBase64(await image.arrayBuffer());
       const output = await env.AI.run(MODEL, {
-        image: Array.from(source),
+        image_b64: source,
         prompt,
+        negative_prompt: "extra bed, duplicate furniture, distorted cabinet, warped doors, changed room, text, watermark, people",
         strength: 0.22,
         guidance: 8,
         num_steps: 20
@@ -124,8 +137,11 @@ export default {
       });
     } catch (error) {
       console.error("Workers AI generation failed", error);
+      const detail = cleanText(error?.message || error, 240);
       return json(request, env, {
-        error: "The room preview could not be generated. Please try again."
+        error: detail
+          ? `Cloudflare AI could not generate the preview: ${detail}`
+          : "Cloudflare AI could not generate the preview. Please try again."
       }, 502);
     }
   }
