@@ -1,0 +1,1726 @@
+{% assign murphy_product = all_products['murphy-bed-customizable'] %}
+{% assign murphy_variant_id = murphy_product.variants.first.id %}
+
+<div
+  class="builder-wrapper container"
+  data-imb-guided-builder
+  data-room-visualizer-endpoint="{{ section.settings.room_visualizer_endpoint | escape }}"
+>
+  <h1>{{ section.settings.heading }}</h1>
+
+  <!-- LEFT: PREVIEW -->
+  <div class="preview-container">
+    <div class="preview-toolbar">
+      <div class="preview-status">
+        <div class="status-pill">
+          <span class="label">Size</span>
+          <strong id="status-size">Single</strong>
+        </div>
+        <div class="status-pill">
+          <span class="label">Door</span>
+          <strong id="status-door">Flat Modern</strong>
+        </div>
+        <div class="status-pill">
+          <span class="label">Finish</span>
+          <strong id="status-finish">Light Walnut</strong>
+        </div>
+      </div>
+
+      <button type="button" class="preview-reset-btn" id="preview-reset">Reset Preview</button>
+    </div>
+
+    <div id="preview-stage">
+      <img
+        id="preview-base"
+        src="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Bed-Section_1.png?v=1758276654"
+        alt="Base Bed"
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+        data-image-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Bed-Section_1.png?v=1758276654"
+        data-image-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_49466037-bb94-4eec-9405-90f20c714228.png?v=1773862229"
+        data-image-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_78679be4-843e-4942-847b-4927a6bb06ba.png?v=1773862229"
+        data-image-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_ceacd37f-c130-4b69-9efa-528155868e1b.png?v=1773862229"
+        data-image-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_b6ea96f9-96f4-4ec1-835f-e6b80ad1b1de.png?v=1773862228"
+        data-image-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_ad7921da-2e04-4868-97de-e187e1897a3d.png?v=1773862228"
+        data-image-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_0debc5b7-6df1-43c1-bead-e699e55e4f2c.png?v=1773862228"
+        data-image-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_437fc0cd-ac07-44ce-88da-7ec53812fc4f.png?v=1773862229"
+        data-image-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_07004dad-eb9c-4571-857a-196dd6296334.png?v=1773862229"
+        data-image-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_d10f0e2b-7d76-4933-bcbe-b2e39b40102d.png?v=1773862228"
+        data-image-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_f1c63285-804e-4c71-98e2-0b45d614c04e.png?v=1773862229"
+        data-image-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_cb475a63-2be2-48e6-bb07-4a1bf90205b1.png?v=1773862228"
+        data-image-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_e3ab544d-4d4f-4885-8a33-47b5943e81f5.png?v=1773862228"
+        data-image-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_94988199-0324-468d-bc62-3137f67fe73c.png?v=1773862229"
+        data-image-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_c2235f80-290b-44ab-a8ac-63127e713b12.png?v=1773862228"
+        data-image-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_e1a878c3-c30d-494a-91c0-4087ceb61136.png?v=1773862228"
+      >
+
+      <img id="overlay-crown" src="" alt="Crown Preview" style="display:none;">
+      <img id="overlay-door" src="" alt="Door Style Preview" style="display:none;">
+
+      <img id="overlay-cabinet-left" src="" alt="Left Cabinet Preview" style="display:none;">
+      <img id="overlay-cabinet-right" src="" alt="Right Cabinet Preview" style="display:none;">
+
+      <img id="overlay-lower-left" src="" alt="Left Lower Door" style="display:none;">
+      <img id="overlay-lower-right" src="" alt="Right Lower Door" style="display:none;">
+      <img id="overlay-tray-left" src="" alt="Left Pull Out Tray" style="display:none;">
+      <img id="overlay-tray-right" src="" alt="Right Pull Out Tray" style="display:none;">
+
+      <img id="overlay-drawers-left" src="" alt="Left Drawers" style="display:none;">
+      <img id="overlay-drawers-right" src="" alt="Right Drawers" style="display:none;">
+      <img id="overlay-upper-left" src="" alt="Left Upper Door" style="display:none;">
+      <img id="overlay-upper-right" src="" alt="Right Upper Door" style="display:none;">
+    </div>
+  </div>
+
+  <!-- RIGHT: OPTIONS + SUMMARY -->
+  <div class="options-summary">
+    <div class="builder-progress builder-progress--wizard">
+      <div class="builder-progress-top">
+        <div>
+          <div class="builder-progress-kicker">Live Builder</div>
+          <div class="builder-progress-title" id="wizard-step-title">Choose Your Size</div>
+        </div>
+        <div class="builder-progress-total" id="wizard-step-count">Step 1 of 8</div>
+      </div>
+      <div class="builder-progress-bar">
+        <div class="builder-progress-fill" id="wizard-progress-fill"></div>
+      </div>
+      <div class="wizard-step-dots" id="wizard-step-dots" aria-label="Builder steps"></div>
+      <div class="builder-progress-total builder-progress-total--legacy" id="progress-total">0 / 6 customized</div>
+    </div>
+
+    <div class="options-container" id="wizard-options-container" data-wizard-options>
+      <!-- STEP 1 -->
+
+      <div class="builder-step" data-step="1">
+        <div class="size-options">
+          <label class="size-option">
+            <input type="radio" name="size" value="Single" data-price="2795" checked>
+            Single ($2,795.00)
+          </label>
+
+          <label class="size-option">
+            <input type="radio" name="size" value="Double" data-price="2895">
+            Double ($2,895.00)
+          </label>
+
+          <label class="size-option">
+            <input type="radio" name="size" value="Queen" data-price="2995">
+            Queen ($2,995.00)
+          </label>
+        </div>
+
+        <div class="step-head">
+          <div class="step-number">1</div>
+          <div class="step-copy">
+            <h3>Choose Your Bed Style</h3>
+            <p>Select the size and front door design that fits your room best.</p>
+          </div>
+        </div>
+
+        <h3>Every Murphy Bed Includes a Complimentary Siesta Mattress</h3>
+
+        <h3>Step 1 — Pick Door</h3>
+        <div class="door-options">
+          <div
+            class="door-option selected"
+            data-value="Flat Modern"
+            data-price="0"
+            data-image-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Door_1.png?v=1758277804"
+            data-image-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_0cd066c1-ab63-406c-bf0f-e5e3e07fac2e.png?v=1773870797"
+            data-image-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_4253042f-d718-4d67-828b-f98e65aad7ee.png?v=1773870797"
+            data-image-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_05d9ef43-f5f0-4e1a-8df8-b90c0c57c8c9.png?v=1773870797"
+            data-image-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_da7323ce-0cc3-4307-bc39-14fa39fe42ae.png?v=1773870796"
+            data-image-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_a101bcaa-28c1-403a-84ec-0eb099933fc0.png?v=1773870797"
+            data-image-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_770ec3ab-8879-41a6-9add-87d5c7ebc74f.png?v=1773870796"
+            data-image-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_bcb073b0-7d64-46fb-8299-73c936c2ac52.png?v=1773870797"
+            data-image-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Brown_Cherry_ac082b7e-0019-479a-9e2d-dae51a6fe5e1.png?v=1773870796"
+            data-image-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Arbutus_049314e5-047d-4bff-a26e-1b725f453561.png?v=1773870797"
+            data-image-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_4b848a47-47ca-45aa-9afd-f87ccbd4f9b8.png?v=1773870797"
+            data-image-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Garbally_Grey_8fe053fe-1fb6-4715-8133-806f337dc8ef.png?v=1773870797"
+            data-image-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_04da36b6-bbf8-4efe-acb3-682fe3810644.png?v=1773870797"
+            data-image-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Cement_54a210b7-9b14-4fd2-96e9-00965d604ef4.png?v=1773870797"
+            data-image-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Heritage_Brown_08ad8982-5a40-4532-b4e5-a0724d15d980.png?v=1773870796"
+            data-image-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Ebony_42134ea6-326b-4c7f-af97-0627f5b200c0.png?v=1773870796"
+          >
+            <img
+              src="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Flat_door_thumnail.png?v=1758270145"
+              alt="Flat Modern"
+            >
+            <p>Flat Modern</p>
+          </div>
+
+          <div
+            class="door-option"
+            data-value="Full Shaker (Rockland)"
+            data-price="300"
+            data-image-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Door_3.png?v=1758277869"
+            data-image-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT.png?v=1773768704"
+            data-image-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD.png?v=1773768704"
+            data-image-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN.png?v=1773768704"
+            data-image-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY.png?v=1773768704"
+            data-image-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN.png?v=1773768704"
+            data-image-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN.png?v=1773768704"
+            data-image-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH.png?v=1773768704"
+            data-image-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY.png?v=1773768704"
+            data-image-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS.png?v=1773768704"
+            data-image-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE.png?v=1773768704"
+            data-image-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY.png?v=1773768704"
+            data-image-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN.png?v=1773768703"
+            data-image-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_e406b04d-baaf-44d6-9cab-8d30e1c3d8c4.png?v=1773768704"
+            data-image-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN.png?v=1773768703"
+            data-image-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Ebony.png?v=1773768702"
+          >
+            <img
+              src="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/style3_dorr_thumbnail.png?v=1758270320"
+              alt="Full Shaker (Rockland)"
+            >
+            <p>Full Shaker (+$300)</p>
+          </div>
+
+          <div
+            class="door-option"
+            data-value="Detailed Full Shaker (Douglas)"
+            data-price="400"
+            data-image-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Door_2.png?v=1758277838"
+            data-image-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_93b138d6-f1a5-4876-bf4e-8c49c35de50c.png?v=1773794547"
+            data-image-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_b46cbc5e-a357-415c-9aee-8bc8c6487a74.png?v=1773794547"
+            data-image-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_a5da7db8-69ca-4e73-baf1-82e14c1e0571.png?v=1773794547"
+            data-image-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_4e329ef4-3294-421a-8699-c6611ae0b24d.png?v=1773794547"
+            data-image-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_a101bcaa-28c1-403a-84ec-0eb099933fc0.png?v=1773870797"
+            data-image-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_21f2d968-ae86-42d1-bc22-f3b42bc83f5b.png?v=1773794547"
+            data-image-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_7decc91a-f0d9-4db7-ba9a-fb4df7724807.png?v=1773794547"
+            data-image-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_3108e3b2-8231-4681-8a3c-df3128ef4b38.png?v=1773794547"
+            data-image-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_2e482376-0553-4cb1-900c-cb2061a70565.png?v=1773794546"
+            data-image-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_cffbf905-a6bb-47af-90b4-b0077e80de17.png?v=1773794547"
+            data-image-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_6caaca51-995d-4c38-af33-6beb5238f76a.png?v=1773794546"
+            data-image-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_b6083c2b-f0a9-4e3e-bd45-62cab3cd6046.png?v=1773794546"
+            data-image-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_b7da07e4-f693-4517-95aa-946523fab026.png?v=1773794547"
+            data-image-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_a21d99a5-8ac9-4327-bb7d-705d25136115.png?v=1773794546"
+            data-image-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_c840d956-5419-4c48-a560-c57da0740091.png?v=1773794545"
+          >
+            <img
+              src="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/style2_door_thumbnail.png?v=1758270262"
+              alt="Detailed Full Shaker (Douglas)"
+            >
+            <p>Detailed Full Shaker (+$400)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="builder-step" data-step="2">
+        <div class="step-head">
+          <div class="step-number">2</div>
+          <div class="step-copy">
+            <h3>Pick Crown Detail</h3>
+            <p>Add a cleaner modern top or a more detailed classic finish.</p>
+          </div>
+        </div>
+
+        <h3>Step 2 — Pick Crown</h3>
+        <div class="crown-options">
+          <label class="crown-option">
+            <input
+              type="radio"
+              name="crown"
+              value="No Crown"
+              data-price="-200"
+              data-door-default=""
+              data-left-default=""
+              data-right-default=""
+              data-full-default=""
+              checked
+            >
+            No Crown (Save $200)
+          </label>
+
+          <label class="crown-option">
+            <input
+              type="radio"
+              name="crown"
+              value='Flat 2 1/2"'
+              data-price="200"
+
+              data-door-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Rockland-Crown-L-Unit_9.png?v=1759822759"
+              data-door-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_e2b34bfe-3259-4ef7-801a-80f192ad1bb7.png?v=1773796893"
+              data-door-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_e90cad8b-ca49-453b-9e2e-ad3a0ebf56b7.png?v=1773796893"
+              data-door-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_a90fa825-5a2b-48d4-a9f5-16cbde8a129a.png?v=1773796893"
+              data-door-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_f279d622-36cf-464c-aba2-750624b6c3aa.png?v=1773796893"
+              data-door-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_c55d816b-ae34-409d-91c3-ce1de16bdc05.png?v=1773796894"
+              data-door-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_6724f1c4-ce97-45e0-9d23-1359378b6b9a.png?v=1773796893"
+              data-door-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_5540b7ff-3db6-408b-87f8-47962e64e0b2.png?v=1773796893"
+              data-door-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_16d39777-ad0d-4050-8959-ed1b314cac29.png?v=1773796893"
+              data-door-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_80acf003-9649-4b8e-9988-b90d886e3bdb.png?v=1773796893"
+              data-door-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_6c981ee6-fa5e-48c6-9a63-a58aed3d6596.png?v=1773796893"
+              data-door-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_854c5d74-98cc-4534-abd3-cba5dd63f7f8.png?v=1773796893"
+              data-door-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_f5219e86-624f-44e1-960f-03845cfb11fb.png?v=1773796893"
+              data-door-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_f1f3a2bf-5855-4982-ad26-9e8e00febe85.png?v=1773796893"
+              data-door-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_54772d2f-fe7a-4672-a163-5f84c262f2ed.png?v=1773796893"
+              data-door-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_75242268-d27c-49a5-bfed-62a6b9faa8e0.png?v=1773796893"
+
+              data-left-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Rockland-Crown-L-Unit_10.png?v=1759822759"
+              data-left-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_c4736338-461d-495f-bba8-92874c6f4685.png?v=1773837954"
+              data-left-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_f839479c-8d60-44c7-8a6b-54ccffa95204.png?v=1773837955"
+              data-left-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_4a7399d0-97c6-4568-bac7-49363f6446ec.png?v=1773837955"
+              data-left-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_6ca1e6bb-e269-431d-9c55-e8cd48b67c15.png?v=1773837954"
+              data-left-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_53653d6e-cb0a-47a1-ab7b-fe0700d2ad58.png?v=1773837954"
+              data-left-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_384c08a5-a348-4411-aa96-2275bdfff602.png?v=1773837954"
+              data-left-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_d054f91a-99e7-452e-a04d-6722688bf9ef.png?v=1773837954"
+              data-left-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_4cc20531-5a15-43d9-a8db-8e89664a7904.png?v=1773837954"
+              data-left-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_4d1e8ec5-d221-40ef-9fc0-5eb58b60f3f3.png?v=1773837954"
+              data-left-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_7f0d0a42-b31a-462e-a5cd-218200554753.png?v=1773837954"
+              data-left-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_25331dfa-3c7f-4f80-8a71-ea59af304238.png?v=1773837954"
+              data-left-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_60eaa2a6-a07c-40a8-b307-0468f7fac1ea.png?v=1773837954"
+              data-left-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_c5cb34ad-f176-4b18-86fb-3c62730a7c29.png?v=1773837955"
+              data-left-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_18d60769-7699-49cb-bfcf-b735387ffba2.png?v=1773837955"
+              data-left-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_fc168315-937a-495d-ab59-72ca9ab9780b.png?v=1773837954"
+
+              data-right-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Rockland-Crown-R-Unit_4.png?v=1759822759"
+              data-right-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_63562773-4ad3-401c-b23e-160b35c23293.png?v=1773863421"
+              data-right-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_e0ed9f3c-7d3f-42a4-ab69-e19bbdfcaa15.png?v=1773863421"
+              data-right-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_8585f4df-cd0e-4764-98df-9a2085b676da.png?v=1773863421"
+              data-right-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_d10f713b-8df7-4313-b85b-b49f4996573d.png?v=1773863421"
+              data-right-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_8fc7bf02-18da-42d3-8d91-1d93f244d3de.png?v=1773863421"
+              data-right-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_cb17bc5c-a631-433e-aeeb-d0735f4f781f.png?v=1773863421"
+              data-right-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_9835113f-5737-49f5-b578-897b4b06099f.png?v=1773863421"
+              data-right-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_88c7f3b3-8e62-4dcd-bbf0-728c22343611.png?v=1773863421"
+              data-right-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_18ac5198-3673-4c60-bff2-bae170151cf0.png?v=1773863421"
+              data-right-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_831ff72a-40aa-4b53-a05e-1fa0174d53eb.png?v=1773863421"
+              data-right-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_f5e16d97-09a8-4484-be39-4dd4ec3ec16a.png?v=1773863421"
+              data-right-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_c0b0bbd0-6d6b-4201-aeaa-c4ec3ed2773a.png?v=1773863421"
+              data-right-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_ed58ee0d-30a5-4aa9-adbe-76ca7656900e.png?v=1773863420"
+              data-right-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_884ed896-e950-477f-942f-b9ac825b0403.png?v=1773863422"
+              data-right-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_410ac85c-7d57-4bda-83f5-5c1517e35c8d.png?v=1773863421"
+
+              data-full-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Rockland-Crown-LR-Units_2.png?v=1759822759"
+              data-full-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_8160b2d2-3d60-423a-bc7a-858ddf557007.png?v=1773838704"
+              data-full-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_1c944817-ee4f-45d6-aa73-78a331e3e3ee.png?v=1773838704"
+              data-full-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_b89da083-7e84-4f2d-9135-be96831da67a.png?v=1773838704"
+              data-full-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_0afc2e58-ba64-485f-b8a2-7371f763d232.png?v=1773838704"
+              data-full-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_c03b7c2c-fa97-4e73-93ab-f3343c208a6c.png?v=1773838704"
+              data-full-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_c44172dc-35ba-4d34-b224-5b26531dd339.png?v=1773838704"
+              data-full-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_b24862fd-d63a-4c0c-947c-e63ea01326fe.png?v=1773838704"
+              data-full-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_1f75913b-c664-4b5a-a8de-36cf05712757.png?v=1773838704"
+              data-full-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_34023ce5-f2db-4cd5-a513-68869a3532f0.png?v=1773838704"
+              data-full-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_4e0ee4e1-8496-4063-bb22-06de112afcd7.png?v=1773838704"
+              data-full-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_8596ae30-547d-499c-a4d8-b1597defb8a1.png?v=1773838704"
+              data-full-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_e5728ced-c317-4114-8be1-ef783b8da474.png?v=1773838704"
+              data-full-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_cfd5ee9c-f1dd-46ef-9ad3-d8679799bf73.png?v=1773838704"
+              data-full-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_77abd36b-6499-4e7e-9ceb-946c6cadb6cb.png?v=1773838704"
+              data-full-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_11f8eb7a-3e36-4cea-8242-4a01a88fde72.png?v=1773838704"
+
+              data-door-wide-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Rockland-Crown-L-Unit_9.png?v=1759822759"
+              data-door-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_0ffa10d7-83ec-4b8c-a882-47a2eda49b8b.png?v=1774358060"
+              data-door-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_bfc2e037-24a1-4800-9429-6348a6233661.png?v=1774358059"
+              data-door-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_655fced8-1f52-441a-a6ec-c14daf473d2d.png?v=1774358059"
+              data-door-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_4d1b7903-dc3d-4ea6-be41-5d205275e219.png?v=1774358060"
+              data-door-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_1707e54b-1781-4faf-80c0-727a0aaf2d55.png?v=1774358060"
+              data-door-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_d266ef9a-a6c8-4663-add9-fa92a4d17fbf.png?v=1774358059"
+              data-door-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_ec96b25d-0201-4897-9e7a-2757f2609403.png?v=1774358058"
+              data-door-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_f3cc23a9-480d-4595-b940-b6b2aa0ce8d5.png?v=1774358060"
+              data-door-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_921ee161-49e8-49d3-9cc7-07ac9f5e6bf2.png?v=1774358059"
+              data-door-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_51c78c6e-a852-4dac-b6be-e5f4005cad8f.png?v=1774358060"
+              data-door-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_3da07183-bc4e-4e0f-b91a-5fcf078d8002.png?v=1774358059"
+              data-door-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_39bec068-9921-4b80-91bd-30a5d7185e2c.png?v=1774358058"
+              data-door-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_c7ef9b7e-f346-4662-b19e-5907a5303f75.png?v=1774358059"
+              data-door-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_99db925d-445f-46af-8172-28ac1babb0e7.png?v=1774358059"
+              data-door-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_24471ed0-40a1-4eed-aca6-563f78896d21.png?v=1774358058"
+
+              data-left-wide-default="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Crowns_0001_Rockland-Crown-L-Unit-_1_-copy.png?v=1785342312"
+              data-left-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0006_LIGHT-WALNUT.png?v=1774358453"
+              data-left-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0010_FRUITWOOD.png?v=1774358453"
+              data-left-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0004_OLDMASTERS-PECAN.png?v=1774358453"
+              data-left-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0005_MEDIUM-MAHOGANY.png?v=1774358453"
+              data-left-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0003_SADDLE-BROWN.png?v=1774358453"
+              data-left-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0000_TEXAS-BROWN.png?v=1774358453"
+              data-left-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0001_SUNKISSED-EARTH.png?v=1774358453"
+              data-left-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0013_BROWN-CHERRY.png?v=1774358453"
+              data-left-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0014_ARBUTUS.png?v=1774358453"
+              data-left-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0002_SIDNEY-SPICE.png?v=1774358453"
+              data-left-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0009_GARBALLY-GREY.png?v=1774358453"
+              data-left-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0007_IRON-MOUNTAIN.png?v=1774358453"
+              data-left-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0012_CEMENT.png?v=1774358453"
+              data-left-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0008_HERITAGE-BROWN.png?v=1774358453"
+              data-left-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0011_EBONY.png?v=1774358453"
+
+              data-right-wide-default="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Crowns_0000_Rockland-Crown-L-Unit-_1_-copy-2.png?v=1785342313"
+              data-right-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0006_LIGHT-WALNUT.png?v=1774358692"
+              data-right-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0010_FRUITWOOD.png?v=1774358692"
+              data-right-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0004_OLDMASTERS-PECAN.png?v=1774358692"
+              data-right-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0005_MEDIUM-MAHOGANY.png?v=1774358692"
+              data-right-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0003_SADDLE-BROWN.png?v=1774358692"
+              data-right-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0000_TEXAS-BROWN.png?v=1774358692"
+              data-right-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0001_SUNKISSED-EARTH.png?v=1774358691"
+              data-right-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0013_BROWN-CHERRY.png?v=1774358691"
+              data-right-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0014_ARBUTUS.png?v=1774358692"
+              data-right-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0002_SIDNEY-SPICE.png?v=1774358692"
+              data-right-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0009_GARBALLY-GREY.png?v=1774358692"
+              data-right-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0007_IRON-MOUNTAIN.png?v=1774358692"
+              data-right-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0012_CEMENT.png?v=1774358692"
+              data-right-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0008_HERITAGE-BROWN.png?v=1774358691"
+              data-right-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0011_EBONY.png?v=1774358692"
+
+              data-full-wide-default="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Crowns_0002_Rockland-Crown-L-Unit-_1.png?v=1785342312"
+              data-full-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0006_LIGHT-WALNUT.png?v=1774551082"
+              data-full-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0010_FRUITWOOD.png?v=1774551081"
+              data-full-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0004_OLDMASTERS-PECAN.png?v=1774551082"
+              data-full-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0005_MEDIUM-MAHOGANY.png?v=1774551081"
+              data-full-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0003_SADDLE-BROWN.png?v=1774551082"
+              data-full-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0000_TEXAS-BROWN.png?v=1774551081"
+              data-full-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0001_SUNKISSED-EARTH.png?v=1774551081"
+              data-full-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0013_BROWN-CHERRY.png?v=1774551082"
+              data-full-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0014_ARBUTUS.png?v=1774551082"
+              data-full-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0002_SIDNEY-SPICE.png?v=1774551081"
+              data-full-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0009_GARBALLY-GREY.png?v=1774551082"
+              data-full-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0007_IRON-MOUNTAIN.png?v=1774551081"
+              data-full-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0012_CEMENT.png?v=1774551082"
+              data-full-wide-sc13-heritage-brown="PASTE_CROWN_FULL_22_HERITAGE_BROWN_URL"
+              data-full-wide-sc4-ebony="PASTE_CROWN_FULL_22_EBONY_URL"
+            >
+            Flat 2 1/2" (+$200)
+          </label>
+
+          <label class="crown-option">
+            <input
+              type="radio"
+              name="crown"
+              value="Bevelled Crown"
+              data-price="200"
+
+              data-door-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/551165_363ce871-f8d7-4a2a-af78-343750b5a334.png?v=1759141937"
+              data-door-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_6f919a29-c51e-4c2b-824c-51ad7d16f4a5.png?v=1773839441"
+              data-door-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_536b5b7a-6a26-4b62-b2c9-5b84410c84ff.png?v=1773839441"
+              data-door-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_9a0dfec5-3f36-4c02-8bc8-263ad356b9e0.png?v=1773839441"
+              data-door-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_a343dc3c-c36a-4a91-953f-1a13ac240bd1.png?v=1773839442"
+              data-door-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_2ce42342-63ae-4bb2-a4d6-70accbe35598.png?v=1773839442"
+              data-door-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_7bb5271c-2d58-46ad-8f83-0eb384f91b7b.png?v=1773839442"
+              data-door-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_0e1748ea-7fc6-4d2c-b4b5-35a712a5d6ec.png?v=1773839442"
+              data-door-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_904991b8-1c82-4ff9-b3ac-6119286bcc25.png?v=1773839441"
+              data-door-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_44c3f2b5-c648-4586-b34f-38871dc5301d.png?v=1773839441"
+              data-door-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_e730d81e-6f8b-4f33-9fee-4a8d5b727d66.png?v=1773839442"
+              data-door-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_983c6975-a40e-43c5-87da-fb5ee9370950.png?v=1773839441"
+              data-door-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_9157595c-a03e-429b-9d2b-6f0b069c55dc.png?v=1773839441"
+              data-door-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_f2fddee7-3b05-4958-9aea-a56050686d7c.png?v=1773839441"
+              data-door-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_2cc5c532-d759-401b-93ea-6980442fde6b.png?v=1773839441"
+              data-door-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_e08df480-eb56-4c0d-8ee8-d5e8aab7c5a6.png?v=1773839441"
+
+              data-left-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Douglas-Crown-L-Unit_977819c8-df95-4da0-bbcc-c75434378ff1.png?v=1759142170"
+              data-left-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_2d66f99e-4928-4bab-81de-2e2cd1ef80c0.png?v=1773843168"
+              data-left-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_5810c821-1675-46e5-9b96-c1fa5b6c7023.png?v=1773843167"
+              data-left-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_9602cb16-ef00-429e-a6db-b9a5b4e30e92.png?v=1773843167"
+              data-left-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_56a91a78-b699-4a5e-8e44-9ea5d745743c.png?v=1773843167"
+              data-left-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_d20f2c30-b62a-4e12-b8c6-f95f29616366.png?v=1773843167"
+              data-left-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_ce1c2f22-f54b-4ca4-8b9b-162311ccb1c6.png?v=1773843168"
+              data-left-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_89ac6037-3386-440b-826f-e623db8d9b46.png?v=1773843167"
+              data-left-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_14a37a5c-7f28-4168-99c6-46889f8675fb.png?v=1773843168"
+              data-left-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_e620ded2-2a77-4074-81a3-88a19f06cd19.png?v=1773843168"
+              data-left-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_ee32d35e-b29f-4548-8e11-2ccad7f1d8e3.png?v=1773843167"
+              data-left-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_85512cec-659c-47e9-b796-25e03106678f.png?v=1773843168"
+              data-left-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_810b294c-d4e1-4abe-acd3-1512951b9c10.png?v=1773843168"
+              data-left-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_1feae943-766b-4c87-ab6e-9a6a0d649a72.png?v=1773843167"
+              data-left-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_9047a300-6a3a-4724-bbdd-df8d6271c851.png?v=1773843168"
+              data-left-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_8691edf3-d040-4a58-86a4-8ab8ab20eb36.png?v=1773843167"
+
+              data-right-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Douglas-Crown-R-Unit.png?v=1759142233"
+              data-right-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_3864e2ab-9585-413e-8fbc-acc57b3536f7.png?v=1773864984"
+              data-right-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_121a0e4b-a535-4640-b690-ff6f13012050.png?v=1773864984"
+              data-right-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_3e2f009d-8ff9-4e88-805a-383929ec1413.png?v=1773864984"
+              data-right-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_2ccd6ae6-f8da-439d-8887-1cd9154e96a3.png?v=1773864984"
+              data-right-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_30a9a9b8-ac87-4549-aae0-66f388df13cf.png?v=1773864984"
+              data-right-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_de477aad-3c03-44ff-8689-d939e1f951b1.png?v=1773864984"
+              data-right-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_2db1f347-bd5d-4703-95ee-12935f00bbce.png?v=1773864984"
+              data-right-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_a551c1aa-771b-444a-9a03-5d49a39f30be.png?v=1773864984"
+              data-right-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_a7807e0a-506c-4fe9-bfdb-156812d4c328.png?v=1773864984"
+              data-right-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_d7ed2250-2174-4aa5-abd5-64179ac3d8dd.png?v=1773864984"
+              data-right-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_9114f933-8117-48c8-bf68-fc8e363dc36f.png?v=1773864984"
+              data-right-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_c51b6e85-2f2e-4187-a30f-ebea2526a8df.png?v=1773864984"
+              data-right-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_2ed515e0-950d-4ca6-8a1e-195a7d05fad0.png?v=1773864984"
+              data-right-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_a049d10a-9850-42b8-bd64-7208b8c3ba0a.png?v=1773864984"
+              data-right-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_fa7f7936-d8fb-4ab6-bfac-d8a87d7e783e.png?v=1773864984"
+
+              data-full-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Douglas-Crown-LR-Units.png?v=1759142088"
+              data-full-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_3922cc6a-0f5b-4681-babc-70fad9b44860.png?v=1773843587"
+              data-full-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_9cec3949-a919-4f7b-9926-6067c23be971.png?v=1773843587"
+              data-full-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_304c3cd2-7e1e-41f3-ba97-a31f3163b08c.png?v=1773843587"
+              data-full-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_b8babbd6-3e8d-4d0d-b70d-572e962e0343.png?v=1773843587"
+              data-full-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_c6ce5828-f07b-4882-a921-bb714328a4f5.png?v=1773843587"
+              data-full-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_e846e3a6-bade-4644-a72b-554a854552c3.png?v=1773843587"
+              data-full-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_1c7209bb-5298-4039-ad2d-665668df1aee.png?v=1773843587"
+              data-full-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_aec4af21-6ff6-4486-bd77-456be3bf2bf6.png?v=1773843587"
+              data-full-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_3b931a67-59b9-4d03-ac70-4ed985ca4140.png?v=1773843587"
+              data-full-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_2b15bf8e-d350-4c00-ba4b-2118f95a32c3.png?v=1773843587"
+              data-full-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_005189b2-c140-48c7-a4b6-bc0f35c5bca3.png?v=1773843587"
+              data-full-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_16346e4b-d437-4be1-8292-b3ab069e88c1.png?v=1773843587"
+              data-full-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_5c36d8ee-ff9f-4783-944e-406938bcd75d.png?v=1773843587"
+              data-full-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_4afcdba1-b96a-4852-a23c-3bd7cab5fe87.png?v=1773843587"
+              data-full-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_6b9100c5-6a5e-44cb-b72c-7ff0d7366249.png?v=1773843587"
+
+              data-door-wide-default="PASTE_CROWN_DOOR_22_DEFAULT_URL"
+              data-door-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_587853e7-c3b5-400b-bc9a-bbdd9f918d25.png?v=1774359005"
+              data-door-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_b71f6411-d97f-4756-be46-94006e3e2629.png?v=1774359006"
+              data-door-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_f4442060-981d-4c04-bc23-5595be7a5c09.png?v=1774359005"
+              data-door-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_04e1dd72-ac02-4854-b44c-3a212c749125.png?v=1774359005"
+              data-door-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_3d43a4d1-5cc3-4615-ad76-614eb48926a7.png?v=1774359005"
+              data-door-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_5262f30a-5541-4c4c-a3bb-553aac7f44b2.png?v=1774359006"
+              data-door-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_905a1521-540f-4216-a301-ef843bbcb938.png?v=1774359006"
+              data-door-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_79f523bf-e0a8-4380-bf02-21febdef323a.png?v=1774359006"
+              data-door-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_3681f2ad-d8c2-43b6-a6e2-9589801e9c18.png?v=1774359006"
+              data-door-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_1333265b-5891-4754-a43c-c7a5cf1a801f.png?v=1774359005"
+              data-door-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_75a8b532-a38d-45fa-a524-7bd6e1cd73b3.png?v=1774359005"
+              data-door-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_414534b1-3158-4cac-a720-342c7efd9304.png?v=1774359005"
+              data-door-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_b5589ddb-b4a4-4fd1-a524-2b97ec6cb894.png?v=1774359005"
+              data-door-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_43fa6713-16ed-44f5-a259-99daa1f4bfdd.png?v=1774359005"
+              data-door-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_49c849ca-11fc-4010-9f76-38646bd025ed.png?v=1774359006"
+
+              data-left-wide-default="PASTE_CROWN_LEFT_22_DEFAULT_URL"
+              data-left-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0006_LIGHT-WALNUT_2c7f2270-b5a1-484d-946f-361257d7b6bb.png?v=1774362639"
+              data-left-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0010_FRUITWOOD_5a5dfc86-2a14-422a-a319-c893697339bd.png?v=1774362638"
+              data-left-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0004_OLDMASTERS-PECAN_b5a334a3-1e0d-466a-8b8f-1971681df8c8.png?v=1774362639"
+              data-left-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0005_MEDIUM-MAHOGANY_70513116-bcb9-4626-b64f-52ee40a4ccef.png?v=1774362639"
+              data-left-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0003_SADDLE-BROWN_26df30d0-fc45-4ddf-9458-0a5be4102457.png?v=1774362637"
+              data-left-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0000_TEXAS-BROWN_a7564791-9432-4f91-ac65-33f287dab19b.png?v=1774362639"
+              data-left-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0001_SUNKISSED-EARTH_219caa37-9461-4c25-8d71-202ae36229e6.png?v=1774362637"
+              data-left-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0013_BROWN-CHERRY_4c29de16-badd-42b6-9d5e-30e698783456.png?v=1774362638"
+              data-left-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0014_ARBUTUS_7e81ad34-e3ca-496d-bdf3-80276886b94c.png?v=1774362637"
+              data-left-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0002_SIDNEY-SPICE_063bfab5-ebd7-4dfa-ae49-bf6f5bf4cdba.png?v=1774362638"
+              data-left-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0009_GARBALLY-GREY_5fc5fa9a-ccda-408d-82f1-61b5bf563b70.png?v=1774362638"
+              data-left-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0007_IRON-MOUNTAIN_37933205-4b14-4595-8427-99adbb23ee4b.png?v=1774362639"
+              data-left-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0012_CEMENT_e3fd1201-b8a9-427a-9e82-7441be4f386a.png?v=1774362638"
+              data-left-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0008_HERITAGE-BROWN_adbf313e-caec-4bde-93af-bd8d1aa5b371.png?v=1774362640"
+              data-left-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0011_EBONY_6659c9b0-d5d0-4d7b-955e-5d2efcd913fc.png?v=1774362640"
+
+              data-right-wide-default="PASTE_CROWN_RIGHT_22_DEFAULT_URL"
+              data-right-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0006_LIGHT-WALNUT_23fce1be-8c8e-4527-b12d-b3c476dd3bdc.png?v=1774362879"
+              data-right-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0010_FRUITWOOD_a0338225-164a-4b79-8335-4773e1d4d9b2.png?v=1774362879"
+              data-right-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0004_OLDMASTERS-PECAN_fffd98b2-f8e4-4ee4-9971-932346e7c672.png?v=1774362879"
+              data-right-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0005_MEDIUM-MAHOGANY_15a59f6c-a467-4fdb-a424-c46a0d15835e.png?v=1774362879"
+              data-right-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0003_SADDLE-BROWN_c94c7b21-1d88-415b-9a70-744a1b80fdf4.png?v=1774362879"
+              data-right-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0000_TEXAS-BROWN_37dad2c3-8757-4c18-8995-234845e40f21.png?v=1774362879"
+              data-right-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0001_SUNKISSED-EARTH_a9b24316-a8b2-48a1-a1fd-ae2e172ee392.png?v=1774362879"
+              data-right-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0013_BROWN-CHERRY_0b65827e-c6ab-4bfb-9e48-0258193e59fc.png?v=1774362879"
+              data-right-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0014_ARBUTUS_b5117548-5061-47e9-b7be-498e3c627127.png?v=1774362880"
+              data-right-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0002_SIDNEY-SPICE_590050ea-8d44-44f2-8d6b-31ccba76bd2d.png?v=1774362879"
+              data-right-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0009_GARBALLY-GREY_1dce89ea-328f-47f3-9daa-f38123f19bb5.png?v=1774362879"
+              data-right-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0007_IRON-MOUNTAIN_9b3c5a58-e386-47e5-b8e9-599d33f44be6.png?v=1774362879"
+              data-right-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0012_CEMENT_6c5e56f8-b43f-42f6-b4d8-5e5ac1347cd4.png?v=1774362879"
+              data-right-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0008_HERITAGE-BROWN_5ee1751f-e437-4006-b129-799d3d4c6b33.png?v=1774362879"
+              data-right-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0011_EBONY_0e834cb5-8c7f-4178-9325-9bfa60ffdb97.png?v=1774362880"
+
+              data-full-wide-default="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Crowns_0005_551165.png?v=1785342313"
+data-full-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0006_LIGHT-WALNUT_e2d0238d-bbd3-4bcb-8391-9b50812aed67.png?v=1785332351"
+data-full-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0010_FRUITWOOD_0f7685fd-f480-4e13-9672-3ab7a4760050.png?v=1785332352"
+data-full-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0004_OLDMASTERS-PECAN_0904a7e9-cb67-4071-8ad3-526650529cff.png?v=1785332352"
+data-full-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0005_MEDIUM-MAHOGANY_893287aa-c484-43d2-96aa-add34456949b.png?v=1785332351"
+data-full-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0003_SADDLE-BROWN_5edd5243-d8ae-487a-b447-abcb094b8f13.png?v=1785332353"
+data-full-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0000_TEXAS-BROWN_c0433138-f1f3-43f2-a4dc-1cb64546247a.png?v=1785332352"
+data-full-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0001_SUNKISSED-EARTH_b91e06e0-d64d-4166-923d-a95babc5cd94.png?v=1785332352"
+data-full-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full_b1c228aa-fa5d-498e-8858-9d3359840da0.psd?v=1785332354"
+data-full-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0014_ARBUTUS_2dbaa517-9e6d-4359-9755-0fc862e56b4b.png?v=1785332352"
+data-full-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0002_SIDNEY-SPICE_8ff20bdd-8305-47fa-890a-9a7c827c915a.png?v=1785332352"
+data-full-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0009_GARBALLY-GREY_6d1bf0d3-7d80-4bf8-8014-bac74f2e1374.png?v=1785332351"
+data-full-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0007_IRON-MOUNTAIN_809b3f0c-0b20-44cc-819b-da9a844b9a3d.png?v=1785332352"
+data-full-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0012_CEMENT_91d6a053-eb3c-4ceb-b567-3f76a62662d5.png?v=1785332351"
+data-full-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0008_HERITAGE-BROWN_811f6bb9-df36-47fb-bfe2-0f278bbe31ae.png?v=1785332352"
+data-full-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Full-_0011_EBONY_1206bbab-710f-4ac9-96e3-45762999c1fb.png?v=1785332352"
+            >
+            Bevelled Crown (+$200)
+          </label>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="builder-step" data-step="3">
+        <div class="step-head">
+          <div class="step-number">3</div>
+          <div class="step-copy">
+            <h3>Add Side Storage</h3>
+            <p>Expand your wall bed with cabinets, drawers, upper doors, and trays.</p>
+          </div>
+        </div>
+
+        <h3>Step 3 — Pick Side Units</h3>
+
+        <!-- Left Side -->
+        <div class="side-unit" data-side="left">
+          <h4>Left Side Cabinet</h4>
+          <label class="side-toggle">
+            <input type="checkbox" class="side-enable" data-side="left" data-base="895">
+            Add Left Side Cabinet — $895.00 (15" base door included)
+          </label>
+
+          <div class="side-addons left" style="display:none;">
+            <label>
+              <input
+                type="checkbox"
+                class="side-addon toggle-drawer"
+                data-side="left"
+                data-name="Left: Add Two Drawers"
+                data-price="200"
+              >
+              <span class="option-text">Add Two Drawers (+$200)</span>
+            </label>
+
+            <div class="drawer-style-group left" style="display:none;">
+              <label class="drawer-style">
+                <input
+                  type="radio"
+                  name="left-drawer-style"
+                  value="Flat Drawer"
+                  data-left-default="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat_Drawer_Left.png?v=1773772400"
+                  data-left-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_bd5907a0-464b-4ee6-a794-b548891bd6a0.png?v=1773845286"
+                  data-left-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_c67f45c1-2980-46db-9a13-85ef50663fcf.png?v=1773845287"
+                  data-left-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_df1a1ec0-cb95-4b61-9678-43cb820bc76d.png?v=1773845287"
+                  data-left-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_da7323ce-0cc3-4307-bc39-14fa39fe42ae.png?v=1773870796"
+                  data-left-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_ab8a9705-049d-42c5-8f5d-b72795fedfab.png?v=1773845287"
+                  data-left-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_089cf237-e207-4b4a-884f-f69b869c8ff1.png?v=1773845287"
+                  data-left-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_5c4fed48-7a12-47a9-8fb7-aec9959568ed.png?v=1773845287"
+                  data-left-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_825fb633-b0a8-4e01-8fe9-090c7a4e54c8.png?v=1773845287"
+                  data-left-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_f687a718-a359-43fa-8c6d-9d626d3e8198.png?v=1773845287"
+                  data-left-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_aaf39f93-6b68-4058-8508-87f7e947abcb.png?v=1773845287"
+                  data-left-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_c40d65b3-c1df-46e6-94b0-fc0b7246022a.png?v=1773845287"
+                  data-left-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_77147202-a2fc-4e9a-8605-cd6378934f91.png?v=1773845286"
+                  data-left-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_60754cf7-2ae1-4157-b3ba-8a956459ddc1.png?v=1773845287"
+                  data-left-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_99476734-0e73-4481-8e1c-46bdb86e02c1.png?v=1773845286"
+                  data-left-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_8fc90b92-5ade-492b-93e4-0a0c7d62dec2.png?v=1773845287"
+                  checked
+
+                  data-left-wide-default="PASTE_LEFT_DRAWER_22WIDE_DEFAULT_URL"
+                  data-left-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0006_LIGHT-WALNUT.png?v=1774372810"
+                  data-left-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0010_FRUITWOOD.png?v=1774372810"
+                  data-left-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0004_OLDMASTERS-PECAN.png?v=1774372810"
+                  data-left-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0005_MEDIUM-MAHOGANY.png?v=1774372810"
+                  data-left-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0003_SADDLE-BROWN.png?v=1774372810"
+                  data-left-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0000_TEXAS-BROWN.png?v=1774372810"
+                  data-left-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0001_SUNKISSED-EARTH.png?v=1774372810"
+                  data-left-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0014_BROWN-CHERRY.png?v=1774372810"
+                  data-left-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0015_ARBUTUS.png?v=1774372810"
+                  data-left-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0002_SIDNEY-SPICE.png?v=1774372810"
+                  data-left-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0009_GARBALLY-GREY.png?v=1774372810"
+                  data-left-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0007_IRON-MOUNTAIN.png?v=1774372810"
+                  data-left-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0013_CEMENT.png?v=1774372810"
+                  data-left-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0008_HERITAGE-BROWN.png?v=1774372810"
+                  data-left-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawers_0012_EBONY.png?v=1774372810"
+                >
+                <span class="option-text">Flat Drawer (style)</span>
+              </label>
+
+              <label class="drawer-style">
+                <input
+                  type="radio"
+                  name="left-drawer-style"
+                  value="Full Shaker Drawer"
+                  data-left-default="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/full_shaker_drawer_720.png?v=1773784377"
+                  data-left-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_8197f199-6aff-47f9-adf1-364a9d8ee791.png?v=1773847366"
+                  data-left-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_7bd36928-9506-417a-a7a2-7186fdf3056e.png?v=1773847366"
+                  data-left-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_80907d45-8a46-40f0-8b59-cfc3a7dda9fa.png?v=1773847366"
+                  data-left-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_c2300127-4871-4373-ae9a-c809c5fc61c3.png?v=1773847366"
+                  data-left-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_b47d594c-63c1-46ae-945c-e7ea2f3b18e7.png?v=1773847366"
+                  data-left-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_d753dec1-e439-45d8-ba72-03e70384f22b.png?v=1773847366"
+                  data-left-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_b3161836-64c7-4302-b492-6c9699e68689.png?v=1773847366"
+                  data-left-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_59148fa8-126a-4ab0-8aca-32a69568e62d.png?v=1773847366"
+                  data-left-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_8ac002fc-77cc-4e73-a9d9-76f77c48f0b1.png?v=1773847366"
+                  data-left-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_b2a76bfe-893d-4eb7-a8e2-fd34ebc59fd2.png?v=1773847366"
+                  data-left-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_7a16fbe6-1cf6-444c-be2e-16a9015ab094.png?v=1773847366"
+                  data-left-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_bcdd8ded-7707-46d7-93b3-17c7a1ae9acd.png?v=1773847366"
+                  data-left-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_f5cb3779-6609-4e5d-ab82-b040e8572b6b.png?v=1773847366"
+                  data-left-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_fe2136b1-6c34-47bd-9053-c1b4a9bb3be4.png?v=1773847366"
+                  data-left-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Ebony_c9faf2c9-2977-4f11-b6a8-a8b148524aa0.png?v=1773847365"
+
+                  data-left-wide-default="PASTE_LEFT_DRAWER_22WIDE_DEFAULT_URL"
+                  data-left-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0006_LIGHT-WALNUT.png?v=1774373295"
+                  data-left-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0010_FRUITWOOD.png?v=1774373295"
+                  data-left-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0004_OLDMASTERS-PECAN.png?v=1774373295"
+                  data-left-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0005_MEDIUM-MAHOGANY.png?v=1774373295"
+                  data-left-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0003_SADDLE-BROWN.png?v=1774373295"
+                  data-left-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0000_TEXAS-BROWN.png?v=1774373295"
+                  data-left-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0001_SUNKISSED-EARTH.png?v=1774373295"
+                  data-left-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0013_BROWN-CHERRY.png?v=1774373295"
+                  data-left-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0014_ARBUTUS.png?v=1774373295"
+                  data-left-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0002_SIDNEY-SPICE.png?v=1774373295"
+                  data-left-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0009_GARBALLY-GREY.png?v=1774373295"
+                  data-left-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0007_IRON-MOUNTAIN.png?v=1774373295"
+                  data-left-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0012_CEMENT.png?v=1774373295"
+                  data-left-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0008_HERITAGE-BROWN.png?v=1774373294"
+                  data-left-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0011_Ebony.png?v=1774373295"
+                >
+                <span class="option-text">Full Shaker Drawer (style)</span>
+              </label>
+            </div>
+
+            <label>
+              <input
+                type="checkbox"
+                class="side-addon toggle-upper"
+                data-side="left"
+                data-name="Left: Add Upper Door"
+                data-price="175"
+              >
+              <span class="option-text">Add Upper Door (+$175)</span>
+            </label>
+
+            <div class="upper-style-group left" style="display:none;">
+              <label class="upper-style">
+                <input
+                  type="radio"
+                  name="left-upper-style"
+                  value="Left Upper: Plain"
+                  data-left-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Flat-Door-Top-Door-Left_1_4.png?v=1759140602"
+                  data-left-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_5f62e151-133e-4fc1-8b12-0f3a57a36b42.png?v=1773852191"
+                  data-left-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_1c169724-ffcc-496f-9aad-8b19d9110383.png?v=1773852191"
+                  data-left-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_a484c989-770d-4ddd-8dba-4904abfd4cfc.png?v=1773852190"
+                  data-left-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_a4ed3938-e494-472a-9272-126278638d75.png?v=1773852191"
+                  data-left-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_156c7e36-218f-488c-826f-7df42377f07a.png?v=1773852190"
+                  data-left-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_abbd2f74-0c7c-4c1f-8ae0-9306f1a64207.png?v=1773852190"
+                  data-left-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_e224e8e8-d981-4f13-ba93-f801eae54b6d.png?v=1773852191"
+                  data-left-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_d0e0180b-bdcf-4434-9396-cb1ce68fdb05.png?v=1773852190"
+                  data-left-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_f007713d-fd37-4f2d-a172-6d2d692c9365.png?v=1773852190"
+                  data-left-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_e243e3a8-42b3-4e1f-9cc3-f466bac5a75d.png?v=1773852190"
+                  data-left-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_d95757fd-56fd-4d01-ad9c-8014e9240e75.png?v=1773852191"
+                  data-left-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_421df415-769f-4186-85cd-58ab44c57285.png?v=1773852190"
+                  data-left-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_d9180b62-5a4d-4a81-aa81-3343191f3c67.png?v=1773852190"
+                  data-left-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_3e32afd3-b529-46cb-af83-5e50428a9759.png?v=1773852190"
+                  data-left-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_1213c746-44c8-48d1-853d-c902fc2d52ba.png?v=1773852190"
+                  checked
+
+
+                  data-left-wide-default="PASTE_LEFT_UPPER_22WIDE_DEFAULT_URL"
+                  data-left-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0006_LIGHT-WALNUT_370f29b5-0c32-4e8a-abb1-9231c5feb07d.png?v=1774376015"
+                  data-left-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0010_FRUITWOOD_6b3e45b2-196d-4874-8ff1-04f75197654a.png?v=1774376016"
+                  data-left-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0004_OLDMASTERS-PECAN_405c88c8-fa9d-49e8-9d05-6d8010babbd8.png?v=1774376016"
+                  data-left-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0005_MEDIUM-MAHOGANY_2f0e492a-bfbe-43cf-8299-d76640874999.png?v=1774376016"
+                  data-left-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0003_SADDLE-BROWN_b0174f92-b4c9-40f1-95b8-f0c003a413ff.png?v=1774376016"
+                  data-left-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0000_TEXAS-BROWN_f0061630-2235-4414-a60e-8c1f93efcf1f.png?v=1774376015"
+                  data-left-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0001_SUNKISSED-EARTH_c0c85df0-229d-4ce1-a80a-2fab8c274195.png?v=1774376015"
+                  data-left-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0013_BROWN-CHERRY_466d8e0f-eca8-42c9-8079-6babb0e9b2c6.png?v=1774376015"
+                  data-left-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0014_ARBUTUS_6c179426-69f6-44fb-9764-a545a18093b0.png?v=1774376015"
+                  data-left-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0002_SIDNEY-SPICE_9a3dce30-b91c-4ab1-91a0-49c3406d8e6e.png?v=1774376016"
+                  data-left-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0009_GARBALLY-GREY_605c0ed9-dda9-41e8-8e06-b91f1463ea18.png?v=1774376016"
+                  data-left-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0007_IRON-MOUNTAIN_346427c6-da46-4d60-839b-f65391d57e17.png?v=1774376015"
+                  data-left-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0012_CEMENT_015589d3-2424-43e0-99af-0f0615f83033.png?v=1774376015"
+                  data-left-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0008_HERITAGE-BROWN_6ab22772-3005-45ee-8b5f-2542df4d54e1.png?v=1774376016"
+                  data-left-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0011_EBONY_3c7cc842-22ac-42a4-880e-af659de3a51a.png?v=1774376015"
+                 
+                <span class="option-text">Plain / Shelf (style)</span>
+              </label>
+
+              <label class="upper-style">
+                <input
+                  type="radio"
+                  name="left-upper-style"
+                  value="Left Upper: Full Shaker"
+                  data-left-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Full-Shaker-Top-Door-Left_1_3.png?v=1759140528"
+                  data-left-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_e6d57422-5d2f-4e32-8b8d-cc1b26dac7bd.png?v=1773854393"
+                  data-left-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_d559631f-cfec-4ff9-8d0d-5995c97e9674.png?v=1773854392"
+                  data-left-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_6bbece81-9725-4ffb-95d7-5b2eb6b95782.png?v=1773854392"
+                  data-left-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_d8441558-02ce-4fa4-a328-fd955f343b45.png?v=1773854392"
+                  data-left-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_2a188fcd-b089-408a-972c-1d0b02d08eeb.png?v=1773854393"
+                  data-left-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_ca8977e8-f341-4bfa-b8d4-288c39efaf5e.png?v=1773854393"
+                  data-left-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_a88b3903-5ec9-46f7-98e4-2b53f9f55f39.png?v=1773854392"
+                  data-left-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_0e8254d8-d174-4c34-8f2c-ea76ff88393f.png?v=1773854392"
+                  data-left-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_61481a27-9abd-44db-99e6-9bd420756aef.png?v=1773854392"
+                  data-left-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_5a052798-65e4-4cf0-8a45-7d1e9b291e56.png?v=1773854393"
+                  data-left-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_22f6fc79-7f58-451c-8699-0af45ad0a709.png?v=1773854392"
+                  data-left-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_c3d009e2-a408-4075-9384-a13351936d09.png?v=1773854392"
+                  data-left-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_93e484dc-ba02-406e-a83d-76809d8fac4f.png?v=1773854393"
+                  data-left-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_0e3158d5-4e8d-47c7-bbd2-60a511295b4f.png?v=1773854392"
+                  data-left-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_03eb1dc8-496d-4b12-a1d4-5cb9bf9d653c.png?v=1773854392"
+
+                 data-left-wide-default="PASTE_LEFT_UPPER_22WIDE_DEFAULT_URL"
+                  data-left-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0006_LIGHT-WALNUT_76160a84-e9ae-427d-84d2-073b3f8f62ad.png?v=1774381940"
+                  data-left-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0010_FRUITWOOD_eaff222f-a542-432c-bdba-fefc44ca2552.png?v=1774381939"
+                  data-left-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0004_OLDMASTERS-PECAN_01e5c712-a173-4e95-858b-b04840ddb584.png?v=1774381940"
+                  data-left-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0005_MEDIUM-MAHOGANY_568cd27c-861f-4b75-b00e-139a710c6a12.png?v=1774381940"
+                  data-left-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0003_SADDLE-BROWN_d0d96859-4b5f-41b1-b175-ff7ad34ee0d4.png?v=1774381939"
+                  data-left-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0000_TEXAS-BROWN_4dc73a1a-52f6-41e3-90b5-cc65e06e86e7.png?v=1774381940"
+                  data-left-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0001_SUNKISSED-EARTH_9b7bf3cc-c27e-4022-9e8b-9e85643bb0c0.png?v=1774381939"
+                  data-left-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0013_BROWN-CHERRY_f6f9eba9-6e98-45e4-9be6-5dfbfe389a2f.png?v=1774381940"
+                  data-left-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0014_ARBUTUS_78f9f141-35d7-469e-aa11-dd14bc90b8f8.png?v=1774381940"
+                  data-left-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0002_SIDNEY-SPICE_078c1356-17c6-4bea-b654-ea6630b2142d.png?v=1774381940"
+                  data-left-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0009_GARBALLY-GREY_28522f94-35e1-42a3-9b90-e3388a69101b.png?v=1774381940"
+                  data-left-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0007_IRON-MOUNTAIN_b6d89b68-b638-45bf-848b-f03e26d84a68.png?v=1774381939"
+                  data-left-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0012_CEMENT_1473634a-2652-495b-b25b-5fa8e0644fc5.png?v=1774381940"
+                  data-left-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0008_HERITAGE-BROWN_331d6080-c671-4ec9-bcfc-556583c696c7.png?v=1774381938"
+                  data-left-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0011_EBONY_e6d26d61-b069-4727-9da0-007d0b93081b.png?v=1774381938"
+                >
+                <span class="option-text">Full Shaker Top Door (style)</span>
+              </label>
+            </div>
+
+            <label>
+              <input
+                type="checkbox"
+                class="side-addon"
+                data-side="left"
+                data-name="Left: Pull-Out Tray"
+                data-price="200"
+              >
+              Add Pull-Out Tray (+$200)
+            </label>
+          </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="side-unit" data-side="right">
+          <h4>Right Side Cabinet</h4>
+          <label class="side-toggle">
+            <input type="checkbox" class="side-enable" data-side="right" data-base="895">
+            Add Right Side Cabinet — $895.00 (15" base door included)
+          </label>
+
+          <div class="side-addons right" style="display:none;">
+            <label>
+              <input
+                type="checkbox"
+                class="side-addon toggle-drawer"
+                data-side="right"
+                data-name="Right: Add Two Drawers"
+                data-price="200"
+              >
+              <span class="option-text">Add Two Drawers (+$200)</span>
+            </label>
+
+            <div class="drawer-style-group right" style="display:none;">
+              <label class="drawer-style">
+                <input
+                  type="radio"
+                  name="right-drawer-style"
+                  value="Flat Drawer"
+                  data-right-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Flat_Drawer_Right.png?v=1758277222"
+                  data-right-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_27bab516-4052-4129-91d1-64a8cad953a9.png?v=1773845680"
+                  data-right-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_fb2bea16-6ea0-4b47-8f64-892303d6a573.png?v=1773845680"
+                  data-right-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_84e9b4ac-8272-4a33-bb37-aa937f28be6f.png?v=1773845680"
+                  data-right-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_65ef20a7-569a-4e38-b15b-84f5181b444e.png?v=1773845680"
+                  data-right-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_d1996641-be6b-459f-8f14-fdbeeefa267e.png?v=1773845680"
+                  data-right-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_9a41ecaa-9e73-4914-949f-bf61640a0af9.png?v=1773845680"
+                  data-right-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_c0eac93e-8b0c-45eb-b53d-5aca8357bd8c.png?v=1773845680"
+                  data-right-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_a2956c2e-54ad-4f46-8a0d-13873bcb1d0a.png?v=1773845680"
+                  data-right-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_9573bab3-c2c5-46ac-8915-ac628a78c46a.png?v=1773845680"
+                  data-right-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_062bc3b1-ffbf-448c-8d4a-ffe07641bd6d.png?v=1773845680"
+                  data-right-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_9b47ae0b-e7fb-48b6-8bcf-53f3c1f0d060.png?v=1773845680"
+                  data-right-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_4f51d4a3-ca16-4952-b5a9-a28840c6a4ab.png?v=1773845680"
+                  data-right-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_e9d16b75-a73d-4186-b5b0-f9ecc61e799f.png?v=1773845680"
+                  data-right-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_22c925d3-adff-4efd-a1e1-2a52683dc4d3.png?v=1773845680"
+                  data-right-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_e764e485-793e-4a0e-9d1e-c86c1c621031.png?v=1773845680"
+                  checked
+
+                  data-right-wide-default="PASTE_RIGHT_DRAWER_22WIDE_DEFAULT_URL"
+                  data-right-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0006_LIGHT-WALNUT_c5b711be-fd1d-4756-a20b-054b79598883.png?v=1774373025"
+                  data-right-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0010_FRUITWOOD_a08b2b2f-f387-4586-a6a7-26fe226f8569.png?v=1774373025"
+                  data-right-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0004_OLDMASTERS-PECAN_08fda5f4-6a63-4197-9d94-763cce407421.png?v=1774373025"
+                  data-right-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0005_MEDIUM-MAHOGANY_76994adf-b709-4ebf-acee-1ab53e9a0e8e.png?v=1774373025"
+                  data-right-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0003_SADDLE-BROWN_8cb7dfae-48f5-4a6f-972c-1ed15dc71b9e.png?v=1774373025"
+                  data-right-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0000_TEXAS-BROWN_cb65ed74-89df-4311-ae36-300621c9b2b0.png?v=1774373025"
+                  data-right-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0001_SUNKISSED-EARTH_de279f06-2400-4d28-b270-0b1d8cbce2ba.png?v=1774373025"
+                  data-right-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0013_BROWN-CHERRY_d0c9d894-f2d9-4aa3-9d56-f12c3c4bff6b.png?v=1774373025"
+                  data-right-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0014_ARBUTUS_413b7506-a00f-482c-94c7-63ab9c931798.png?v=1774373029"
+                  data-right-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0002_SIDNEY-SPICE_b6929952-5e5c-46d0-9d6d-5d447f05a97e.png?v=1774373027"
+                  data-right-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0009_GARBALLY-GREY_a3ff6333-5ab1-4c81-be96-56e838e4a55b.png?v=1774373025"
+                  data-right-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0007_IRON-MOUNTAIN_9070f263-c925-48cf-9624-78091f830a91.png?v=1774373025"
+                  data-right-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0012_CEMENT_9fe1dc23-67c7-4bb1-9f0f-abca0e36b344.png?v=1774373027"
+                  data-right-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0008_HERITAGE-BROWN_265427e4-c3fa-418d-8dde-72736ae05db7.png?v=1774373025"
+                  data-right-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0011_EBONY_f7cc389e-b8f3-42b0-9014-2ccb7f7b3d38.png?v=1774373025"
+                >
+                <span class="option-text">Flat Drawer (style)</span>
+              </label>
+
+              <label class="drawer-style">
+                <input
+                  type="radio"
+                  name="right-drawer-style"
+                  value="Full Shaker Drawer"
+                  data-right-default="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/full_shaker_drawer-right_720.png?v=1773784445"
+                  data-right-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_2c3b884a-437e-4213-9ccf-6a0a378a579a.png?v=1773847721"
+                  data-right-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_589d4512-0036-42ac-9aa5-a834ec00139c.png?v=1773847721"
+                  data-right-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_598a90f3-95bd-4add-9c63-e9a746a26bea.png?v=1773847721"
+                  data-right-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_6de0b66f-df16-40c3-ad97-581ca02da170.png?v=1773847720"
+                  data-right-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_f22a845e-47be-40af-b5bc-98bfd1dce6e7.png?v=1773847720"
+                  data-right-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_03297f9b-8cfc-4695-91c7-adcbc14095f2.png?v=1773847720"
+                  data-right-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_bd6d6053-76d9-4441-bd11-f2b90cf52d31.png?v=1773847721"
+                  data-right-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_d524efc1-80b2-4234-b5e5-c2b7cabd2e70.png?v=1773847720"
+                  data-right-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_e998c57c-cf56-4d8c-a2a4-c00060dbe473.png?v=1773847720"
+                  data-right-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_e13ccf37-1471-4443-b7d1-6908e0a2bee8.png?v=1773847721"
+                  data-right-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_2dc89f68-5fcb-45d0-bd30-b08dc41c0b9d.png?v=1773847720"
+                  data-right-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_da484624-f9d8-42ff-97c8-42e9e65385d6.png?v=1773847720"
+                  data-right-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_a83b4b26-ee10-4f5e-909c-55e340e61142.png?v=1773847721"
+                  data-right-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_492cd374-0667-4da7-8bbd-afdc2c6502d1.png?v=1773847720"
+                  data-right-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Ebony_7c28d281-7d74-4dfe-a4f7-45608a47ea4a.png?v=1773847720"
+
+                  data-right-wide-default="PASTE_RIGHT_DRAWER_22WIDE_DEFAULT_URL"
+                  data-right-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0006_LIGHT-WALNUT_6c79c0d7-c573-4e78-8695-e6077ece5c04.png?v=1774373549"
+                  data-right-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0010_FRUITWOOD_7de6faac-ac91-4fdd-b413-f39e7aec8f6e.png?v=1774373550"
+                  data-right-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0004_OLDMASTERS-PECAN_d95c210d-5362-46a5-975d-0752ddd0aeb4.png?v=1774373550"
+                  data-right-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0005_MEDIUM-MAHOGANY_e5ef282c-3993-4ae9-92fc-f56590e7db33.png?v=1774373550"
+                  data-right-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0003_SADDLE-BROWN_158a2c47-192b-466c-810a-5cc0ba172b5d.png?v=1774373549"
+                  data-right-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0000_TEXAS-BROWN_06b604d7-7f64-48d5-b990-abd8c6fc696c.png?v=1774373550"
+                  data-right-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0001_SUNKISSED-EARTH_022d1a44-f785-4105-8348-afacccf29b14.png?v=1774373549"
+                  data-right-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0013_BROWN-CHERRY_9f963dc4-6d36-43e4-9a48-48c465b6c52e.png?v=1774373550"
+                  data-right-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0014_ARBUTUS_873dc3b5-49cf-40a9-9877-8dd361e2fe09.png?v=1774373550"
+                  data-right-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0002_SIDNEY-SPICE_36d85f88-e1da-40cc-8148-297f0fb8267e.png?v=1774373549"
+                  data-right-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0009_GARBALLY-GREY_bbf9a4fa-03e7-4f9b-be6e-a3916def0bda.png?v=1774373550"
+                  data-right-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0007_IRON-MOUNTAIN_0327ef02-1314-46a4-b57e-700e58f7dbed.png?v=1774373549"
+                  data-right-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0012_CEMENT_ee95af36-cda1-4b9c-bf62-c409672cad7c.png?v=1774373550"
+                  data-right-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0008_HERITAGE-BROWN_09b35b81-b9ce-4af3-a9f7-2acf762a6f37.png?v=1774373549"
+                  data-right-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Drawers_0011_Ebony_922c4e2d-fd84-4cf6-8e0b-3ef2803f2009.png?v=1774373549"
+                >
+                <span class="option-text">Full Shaker Drawer (style)</span>
+              </label>
+            </div>
+
+            <label>
+              <input
+                type="checkbox"
+                class="side-addon toggle-upper"
+                data-side="right"
+                data-name="Right: Add Upper Doors"
+                data-price="175"
+              >
+              <span class="option-text">Add Upper Door (+$175)</span>
+            </label>
+
+            <div class="upper-style-group right" style="display:none;">
+              <label class="upper-style">
+                <input
+                  type="radio"
+                  name="right-upper-style"
+                  value="Right Upper: Plain"
+                  data-right-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Flat-Door-Top-Door-Right_1_4.png?v=1759140602"
+                  data-right-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_f11d64cb-3e3d-4b4c-b8f4-b267350e5458.png?v=1773853897"
+                  data-right-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_9a10c279-96bb-4faf-b733-5f3fe65f7ebb.png?v=1773853897"
+                  data-right-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_199bd95c-188a-4625-b279-0e01605529af.png?v=1773853897"
+                  data-right-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_13164c67-56b7-45ae-830d-34cf879a687f.png?v=1773853897"
+                  data-right-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_f3bb3e5a-b5af-42b5-a3d2-de3707b04573.png?v=1773853897"
+                  data-right-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_713bcfea-061d-4878-ab14-0fd7f427c096.png?v=1773853897"
+                  data-right-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_9e6b3013-4d29-49a4-a0ad-adf2c06a919a.png?v=1773853897"
+                  data-right-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_aaec25ea-4a7a-4259-87c9-61454a3f5903.png?v=1773853896"
+                  data-right-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_f2edc17e-e8be-41f1-9d10-859675e0f738.png?v=1773853897"
+                  data-right-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_52742fe6-e7ae-41d2-bfc4-27aaa9cc87de.png?v=1773853897"
+                  data-right-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_a48be746-f631-4d35-9a8e-4e100cf9d496.png?v=1773853897"
+                  data-right-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_ebdb643d-45d7-4e91-b059-586c2dcb5737.png?v=1773853897"
+                  data-right-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_fe07ce71-3a3c-426c-b1a4-43f9effbf324.png?v=1773853897"
+                  data-right-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_8e8be4e0-6c1c-4c49-afff-a1edb81d369d.png?v=1773853897"
+                  data-right-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Ebony_9aaf6ee6-b7d8-43ef-a094-792fc6607a68.png?v=1773853897"
+                  checked
+
+                  data-right-wide-default="PASTE_RIGHT_UPPER_22WIDE_DEFAULT_URL"
+                  data-right-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0006_LIGHT-WALNUT_fdca7723-c468-4b74-98b4-cc1a0f0655db.png?v=1774377295"
+                  data-right-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0010_FRUITWOOD_0c08cba9-61ef-40c6-b059-ec8bb1b5b851.png?v=1774377295"
+                  data-right-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0004_OLDMASTERS-PECAN_9e0228e9-26b0-44f1-ab7e-4e54ead7ccfa.png?v=1774377295"
+                  data-right-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0005_MEDIUM-MAHOGANY_d4d38ff4-7b57-420c-8646-a77898ce8da0.png?v=1774377295"
+                  data-right-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0003_SADDLE-BROWN_5c8b4250-3f36-4840-be54-b72f616fc6dc.png?v=1774377295"
+                  data-right-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0000_TEXAS-BROWN_c0f0ea68-19ae-4330-b321-0ff0d7bc5b61.png?v=1774377295"
+                  data-right-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0001_SUNKISSED-EARTH_8e375464-c8af-4a26-b6d4-dc3c79739bcb.png?v=1774377295"
+                  data-right-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0013_BROWN-CHERRY_d971b6d8-2099-47e4-b4be-d92d9d4a9586.png?v=1774377295"
+                  data-right-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0014_ARBUTUS_0c7fbd38-1346-49e8-8115-092b2bef07b3.png?v=1774377295"
+                  data-right-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0002_SIDNEY-SPICE_5719efee-8412-4b01-848b-23c5607d53a6.png?v=1774377295"
+                  data-right-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0009_GARBALLY-GREY_2b339b00-5d4f-4062-94d8-12d37f567175.png?v=1774377295"
+                  data-right-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0007_IRON-MOUNTAIN_03603215-2354-4ae0-b8b7-3a51e12d749d.png?v=1774377294"
+                  data-right-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0012_CEMENT_70b6ce6d-734b-4b9b-91fe-bcee10525102.png?v=1774377295"
+                  data-right-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0008_HERITAGE-BROWN_82805b39-7814-435c-b736-94b601055b78.png?v=1774377295"
+                  data-right-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0011_EBONY_d0ebefea-0cce-445b-9f87-6bd31ce49f15.png?v=1774377294"
+                >
+                <span class="option-text">Plain / Shelf (style)</span>
+              </label>
+
+              <label class="upper-style">
+                <input
+                  type="radio"
+                  name="right-upper-style"
+                  value="Right Upper: Full Shaker"
+                  data-right-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/Full-Shaker-Top-Door-Right_1_3.png?v=1759140527"
+                  data-right-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_2cbee90e-6edc-403c-8e29-8a4d1d828c79.png?v=1773854850"
+                  data-right-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_cf8b2e5e-bb2d-40ba-95ec-f7b07595d2ad.png?v=1773854850"
+                  data-right-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_013d5bac-5d62-4020-9ec8-83f76b7fa300.png?v=1773854851"
+                  data-right-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_a5bb50e4-f864-4086-9227-d01950c9a020.png?v=1773854850"
+                  data-right-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_218a83ed-7334-4f4b-9232-26faa327b9f9.png?v=1773854850"
+                  data-right-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_9bd51962-4c40-495e-9146-f95101df251d.png?v=1773854851"
+                  data-right-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_ed475135-a820-4ed3-8b02-cf0bee7cea8b.png?v=1773854850"
+                  data-right-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_a43b6626-e8a9-468b-aea1-a4622bbd68ca.png?v=1773854850"
+                  data-right-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_1f453d09-895e-4d1b-98ad-bf4b3784a8e0.png?v=1773854851"
+                  data-right-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_f17ca303-5e57-4049-8d84-981b2cfa99fd.png?v=1773854850"
+                  data-right-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_18a2e343-706d-438b-a4a2-4c6dbb211af8.png?v=1773854850"
+                  data-right-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_cf1a4e66-3204-4dfa-a69c-83c063e92868.png?v=1773854850"
+                  data-right-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_d08269d4-6d24-43f2-836e-38c4ca9c2110.png?v=1773854850"
+                  data-right-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_0505144f-3591-4e37-ae8a-1e80082c0bd1.png?v=1773854850"
+                  data-right-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_d61bd68e-c4b6-4615-a353-ee0a6c75c69d.png?v=1773854850"
+
+                  data-right-wide-default="PASTE_RIGHT_UPPER_22WIDE_DEFAULT_URL"
+                  data-right-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0006_LIGHT-WALNUT_d2b71fc8-fbe0-4025-bb29-3870580ed856.png?v=1774382392"
+                  data-right-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0010_FRUITWOOD_abbef051-d9e9-419d-98db-610fd4f5f1f5.png?v=1774382392"
+                  data-right-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0004_OLDMASTERS-PECAN_cade355d-47b6-436b-aa53-1942793f4796.png?v=1774382392"
+                  data-right-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0005_MEDIUM-MAHOGANY_2924a356-719d-41b4-8069-a7d58e608b17.png?v=1774382391"
+                  data-right-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0003_SADDLE-BROWN_9f34702c-8f0b-47c6-967f-b9ca9150363b.png?v=1774382391"
+                  data-right-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0000_TEXAS-BROWN_fdf63469-3986-448a-a091-70a37719834f.png?v=1774382392"
+                  data-right-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0001_SUNKISSED-EARTH_2104d7d8-e74c-4a6f-8acb-c1ef7c00b9d1.png?v=1774382391"
+                  data-right-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0013_BROWN-CHERRY_6c051c00-1619-44c3-aeeb-36538073469e.png?v=1774382391"
+                  data-right-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0014_ARBUTUS_db767b4a-8ec5-4040-914b-b602a8314eec.png?v=1774382391"
+                  data-right-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0002_SIDNEY-SPICE_bea1d86b-b1b7-4d44-863e-1198bc3eb3d7.png?v=1774382392"
+                  data-right-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0009_GARBALLY-GREY_62bfdb34-b97b-470c-af36-b81d4243a777.png?v=1774382392"
+                  data-right-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0007_IRON-MOUNTAIN_52f97340-045c-4cb3-848c-2757434705ea.png?v=1774382392"
+                  data-right-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0012_CEMENT_e3583ee3-e3d1-477a-9e06-70418c2c3d2f.png?v=1774382392"
+                  data-right-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0008_HERITAGE-BROWN_30ad6d42-b63f-4642-8bbe-21cf3988e84f.png?v=1774382390"
+                  data-right-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0011_EBONY_94f80bb2-2317-44d4-8ed8-e1ab5f353792.png?v=1774382391"
+                >
+                <span class="option-text">Full Shaker Top Door (style)</span>
+              </label>
+            </div>
+
+            <label>
+              <input
+                type="checkbox"
+                class="side-addon"
+                data-side="right"
+                data-name="Right: Pull-Out Tray"
+                data-price="200"
+              >
+              Add Pull-Out Tray (+$200)
+            </label>
+          </div>
+        </div>
+
+        <div class="side-wide-control">
+          <label class="side-wide-card">
+            <input type="checkbox" id="make-both-wide" class="side-wide-sync" data-price-per-side="100">
+            <span class="side-wide-card__copy">
+              <strong>Make Both Side Cabinets 22" Wide</strong>
+              <small>+$100 per selected side. Applies when left, right, or both cabinets are selected.</small>
+            </span>
+          </label>
+        </div>
+
+        <div class="side-wide-control">
+          <label class="side-wide-card">
+            <input type="checkbox" id="face-frame-construction" class="face-frame-sync" data-price="1000">
+            <span class="side-wide-card__copy">
+              <strong>Face Frame Construction</strong>
+              <small>+$1,000</small>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="builder-step" data-step="4">
+        <div class="step-head">
+          <div class="step-number">4</div>
+          <div class="step-copy">
+            <h3>Select Finish</h3>
+            <p>Choose a stain from the library or switch to Benjamin Moore paint.</p>
+          </div>
+        </div>
+
+        <h3>Step 4 — Pick Finish</h3>
+
+        <div id="stainWrap" class="stain-wrap">
+          <h4 class="cfg-subhead">Stain Selection (Included)</h4>
+
+          <div class="stain-grid" id="stainGrid">
+            <div
+              class="stain-card is-selected"
+              data-name="Light Walnut"
+              data-key="light-walnut"
+              data-hex="#866c3e"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_SC3_LIGHT_WALNUT.jpg?v=1772141633"
+                alt="Light Walnut"
+              >
+              <div class="stain-meta"><div class="stain-name">Light Walnut</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="Oldmasters Fruitwood"
+              data-key="oldmasters-fruitwood"
+              data-hex="#c59967"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_OLDMASTERS_FRUITWOOD.jpg?v=1772141633"
+                alt="Oldmasters Fruitwood"
+              >
+              <div class="stain-meta"><div class="stain-name">Oldmasters Fruitwood</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="Oldmasters Pecan"
+              data-key="oldmasters-pecan"
+              data-hex="#c59460"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_OLDMASTERS_PECAN.jpg?v=1772141633"
+                alt="Oldmasters Pecan"
+              >
+              <div class="stain-meta"><div class="stain-name">Oldmasters Pecan</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="Medium Mahogany"
+              data-key="medium-mahogany"
+              data-hex="#653b20"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_SC5_MEDIUM_MAHOGANY_1.jpg?v=1773853525"
+                alt="Medium Mahogany"
+              >
+              <div class="stain-meta"><div class="stain-name">Medium Mahogany</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="Saddle Brown"
+              data-key="saddle-brown"
+              data-hex="#3c3421"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_SC8_SADDLE_BROWN_1.jpg?v=1773853525"
+                alt="Saddle Brown"
+              >
+              <div class="stain-meta"><div class="stain-name">Saddle Brown</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="Texas Brown"
+              data-key="texas-brown"
+              data-hex="#83522e"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_SC15_TEXAS_BROWN_1.jpg?v=1773853525"
+                alt="Texas Brown"
+              >
+              <div class="stain-meta"><div class="stain-name">Texas Brown</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="Sunkissed Earth"
+              data-key="sunkissed-earth"
+              data-hex="#6d451c"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_SC18_SUNKISSED-EARTH_1.jpg?v=1773853526"
+                alt="Sunkissed Earth"
+              >
+              <div class="stain-meta"><div class="stain-name">Sunkissed Earth</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="SC10 Brown Cherry"
+              data-key="sc10-brown-cherry"
+              data-hex="#7b4c26"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_SC10_BROWN_CHERRY.jpg?v=1772141632"
+                alt="SC10 Brown Cherry"
+              >
+              <div class="stain-meta"><div class="stain-name">SC10 Brown Cherry</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="SC16 Arbutus"
+              data-key="sc16-arbutus"
+              data-hex="#7b5c30"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_SC16_ARBUTUS.jpg?v=1772141632"
+                alt="SC16 Arbutus"
+              >
+              <div class="stain-meta"><div class="stain-name">SC16 Arbutus</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="Sidney Spice"
+              data-key="sidney-spice"
+              data-hex="#9e6e3f"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_COLUMBIA_SIDNEY_SPICE.jpg?v=1772141633"
+                alt="Sidney Spice"
+              >
+              <div class="stain-meta"><div class="stain-name">Sidney Spice</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="Garbally Grey"
+              data-key="garbally-grey"
+              data-hex="#5f584d"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_COLUMBIA_GARBALLY_GREY.jpg?v=1772141633"
+                alt="Garbally Grey"
+              >
+              <div class="stain-meta"><div class="stain-name">Garbally Grey</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="SC23 Iron Mountain"
+              data-key="sc23-iron-mountain"
+              data-hex="#3f3d2b"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_SC23_IRON_MOUNTAIN.jpg?v=1772141633"
+                alt="SC23 Iron Mountain"
+              >
+              <div class="stain-meta"><div class="stain-name">SC23 Iron Mountain</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="SC21 Cement"
+              data-key="sc21-cement"
+              data-hex="#74654b"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_SC21_cement.jpg?v=1772141632"
+                alt="SC21 Cement"
+              >
+              <div class="stain-meta"><div class="stain-name">SC21 Cement</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="SC13 Heritage Brown"
+              data-key="sc13-heritage-brown"
+              data-hex="#1b1914"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_SC13_HERITAGE_BROWN.jpg?v=1772141632"
+                alt="SC13 Heritage Brown"
+              >
+              <div class="stain-meta"><div class="stain-name">SC13 Heritage Brown</div></div>
+            </div>
+
+            <div
+              class="stain-card"
+              data-name="SC4 Ebony"
+              data-key="sc4-ebony"
+              data-hex="#1d1b16"
+              data-price="0"
+              onclick="selStain(this)"
+            >
+              <img
+                src="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2026_CLOVERDALE_SC4_EBONY.jpg?v=1772141633"
+                alt="SC4 Ebony"
+              >
+              <div class="stain-meta"><div class="stain-name">SC4 Ebony</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cfg-divider"></div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <span class="cfg-info" id="colorInfo">Or choose paint</span>
+        </div>
+
+        <div id="paintWrap" class="paint-wrap">
+          <div class="paint-box">
+            <label class="paint-row">
+              <input type="checkbox" id="paintCheckbox" data-percent="5" onchange="togglePaint()">
+              <span>Paint (+5%)</span>
+              <span class="paint-price" id="paintPrice">+$0</span>
+            </label>
+
+            <div class="paint-sub">
+              <div id="paintBreakdown">
+                Price: <span id="paintBasePrice">$0</span> + Paint (+5%): <span id="paintAddAmount">$0</span> =
+                <span id="paintTotal">$0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="bmPaintPicker" class="bm-paint-picker" style="display:none;">
+          <h4>Benjamin Moore Paint Selection</h4>
+          <p class="bm-note">
+            Choose one preset Benjamin Moore color below. If you want a different color, showroom staff can accommodate
+            it and pricing can vary.
+          </p>
+
+          <div class="bm-options">
+            <label class="bm-option">
+              <input type="radio" name="bm-color" value="Benjamin Moore Cloud White (OC-130)" data-code="OC-130">
+              Cloud White OC-130
+            </label>
+
+            <label class="bm-option">
+              <input type="radio" name="bm-color" value="Benjamin Moore Simply White (OC-117)" data-code="OC-117">
+              Simply White OC-117
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="builder-step" data-step="5">
+        <div class="step-head">
+          <div class="step-number">5</div>
+          <div class="step-copy">
+            <h3>Choose Mattress</h3>
+            <p>Keep the included Siesta mattress or upgrade for more comfort.</p>
+          </div>
+        </div>
+
+        <h3>Add Mattress</h3>
+        <div class="mattress-options">
+          <label
+            ><input type="radio" name="mattress" value="Own Mattress (No Mattress Needed)" data-price="-300"> I have my
+            own mattress (-$300.00)</label
+          >
+          <label
+            ><input type="radio" name="mattress" value="Siesta Mattress" data-price="0" checked> Siesta Mattress ($0)</label
+          >
+          <label
+            ><input type="radio" name="mattress" value="Zeenith Mattress" data-price="300"> Zenith Mattress ($300.00)</label
+          >
+          <label
+            ><input type="radio" name="mattress" value="SilverStar Mattress" data-price="500"> SilverStar Mattress
+            ($500.00)</label
+          >
+          <label style="display: none;">
+            <input type="radio" name="mattress" value="Mystic Mattress" data-price="1200">
+            Mystic Mattress ($1,200.00)
+          </label>
+        </div>
+      </div>
+
+      <!-- STEP 6 -->
+      <div class="builder-step" data-step="6">
+        <div class="step-head">
+          <div class="step-number">6</div>
+          <div class="step-copy">
+            <h3>Add Lighting</h3>
+            <p>Complete the setup with built in lighting for a premium finish.</p>
+          </div>
+        </div>
+
+        <h3>Add Lights</h3>
+        <label class="lights-option"> <input type="checkbox" id="lights" data-price="350"> Add Lights (+$350) </label>
+      </div>
+
+      <!-- Hidden asset holders -->
+      <div style="display:none;">
+        <div
+          class="cabinet-option"
+          data-left-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/L-Cabinet_1.png?v=1758894136"
+          data-left-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_6cd77431-7059-4403-b510-38827ecd52b5.png?v=1773770092"
+          data-left-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_f1781433-2880-4bef-ac33-3293c9c6b8c0.png?v=1773770092"
+          data-left-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_de35a4e5-1665-4848-b138-214b63b66f9d.png?v=1773770092"
+          data-left-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_0ba21dd2-c4bc-4e84-bfe6-fd99d084bf73.png?v=1773770091"
+          data-left-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_922fe80d-51a2-485d-a98d-01a67b9c7805.png?v=1773770091"
+          data-left-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_42f90847-fe01-42c0-8f0f-39d1c1e95b84.png?v=1773770091"
+          data-left-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_0593a575-7027-4f73-b211-f07e4b08708b.png?v=1773770091"
+          data-left-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_c52d933d-811d-458d-8dd0-2a413031e756.png?v=1773770091"
+          data-left-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_ecda440e-72c7-4f9b-9fdc-14bfa95ccc72.png?v=1773770091"
+          data-left-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_2ee3e698-ed84-455a-bff1-d2c8496e9730.png?v=1773770091"
+          data-left-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_e3349be6-822f-491f-a455-51083783ab85.png?v=1773770092"
+          data-left-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_c1ffe87e-c414-4dde-a781-b12ef324617a.png?v=1773770092"
+          data-left-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_22e9358a-368a-4579-83cf-d7d372f5a35d.png?v=1773770091"
+          data-left-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_c7d6869d-b707-46d9-a678-b6c568652faf.png?v=1773770091"
+          data-left-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_39ec8bcf-0147-4c4a-bebd-0ffbcf4767f5.png?v=1773793625"
+
+          data-left-wide-default="PASTE_LEFT_CABINET_22_DEFAULT_URL"
+          data-left-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0006_LIGHT-WALNUT.png?v=1774363322"
+          data-left-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0010_FRUITWOOD.png?v=1774363322"
+          data-left-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0004_OLDMASTERS-PECAN.png?v=1774363322"
+          data-left-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0005_MEDIUM-MAHOGANY.png?v=1774363321"
+          data-left-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0003_SADDLE-BROWN.png?v=1774363321"
+          data-left-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0000_TEXAS-BROWN_7d332be2-5fc7-4053-95d4-c47519bcabc3.png?v=1774363322"
+          data-left-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0001_SUNKISSED-EARTH.png?v=1774363321"
+          data-left-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0014_BROWN-CHERRY.png?v=1774363322"
+          data-left-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0013_ARBUTUS.png?v=1774363322"
+          data-left-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0002_SIDNEY-SPICE.png?v=1774363321"
+          data-left-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0009_GARBALLY-GREY.png?v=1774363322"
+          data-left-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0007_IRON-MOUNTAIN.png?v=1774363322"
+          data-left-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0012_CEMENT.png?v=1774363321"
+          data-left-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0008_HERITAGE-BROWN.png?v=1774363321"
+          data-left-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0011_EBONY.png?v=1774363321"
+        ></div>
+
+        <div
+          class="cabinet-option second"
+          data-right-default="https://cdn.shopify.com/s/files/1/0759/7955/5038/files/R-Cabinet_1.png?v=1758894271"
+          data-right-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_a610fa13-ef94-4c1b-af53-a1e5806b8c1f.png?v=1773770465"
+          data-right-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_eb38886c-6c21-4496-b038-fddf209837ca.png?v=1773770465"
+          data-right-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_88b153af-eaf4-470f-bc2e-2b521d67e6a5.png?v=1773770465"
+          data-right-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_e9945c3b-a816-446a-839b-ef987341f89b.png?v=1773770465"
+          data-right-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_8b9b8f0e-d7f3-4d1c-b856-2fe0b65f848a.png?v=1773770464"
+          data-right-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_08e5cba8-b03a-4543-ab5f-9ca14b5a40ee.png?v=1773770465"
+          data-right-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_695718a4-e4bd-4426-9904-ec02e3a4e7c1.png?v=1773770465"
+          data-right-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_98f7d1da-fb72-487f-be2b-7f24c1ec5c82.png?v=1773770464"
+          data-right-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_746ad130-1866-4265-b56e-9b2c60353789.png?v=1773770465"
+          data-right-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_3f7b9316-8df0-4789-814a-c9f6c60ba198.png?v=1773770466"
+          data-right-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_b734faca-020c-4a54-a95f-2117c730c1d9.png?v=1773770464"
+          data-right-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_c3502a6c-ebe5-4f92-bbd3-5e6ba4cf94dc.png?v=1773770465"
+          data-right-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_016dd205-4b1f-4c55-9995-77f805d2baa7.png?v=1773770465"
+          data-right-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_fff3f65b-567f-419b-be58-24a29e6aae74.png?v=1773770464"
+          data-right-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_9d8f9338-cefb-4d3b-967e-4fc68f781b5b.png?v=1773770464"
+
+          data-right-wide-default="PASTE_RIGHT_CABINET_22_DEFAULT_URL"
+          data-right-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0006_LIGHT-WALNUT_fc875901-3802-42b4-83c8-4e4e3633d902.png?v=1774363613"
+          data-right-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0010_FRUITWOOD_68d27fe8-2b8c-4e8c-8d9a-06ff3b154158.png?v=1774363613"
+          data-right-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0004_OLDMASTERS-PECAN_f4d3e177-3e5e-4393-80c3-2324c6e772e6.png?v=1774363613"
+          data-right-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0005_MEDIUM-MAHOGANY_3bb5838b-d451-4659-974f-6860a9c40841.png?v=1774363613"
+          data-right-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0003_SADDLE-BROWN_8cbb4e6b-c49c-45e9-876d-1ad0acf924cd.png?v=1774363613"
+          data-right-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0000_TEXAS-BROWN_952ec76b-0ae8-4d49-bd29-ad3f7745202d.png?v=1774363613"
+          data-right-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0001_SUNKISSED-EARTH_f85c560b-a1ff-4aa8-9606-ef188b04ce1e.png?v=1774363613"
+          data-right-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0013_BROWN-CHERRY.png?v=1774363613"
+          data-right-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0014_ARBUTUS.png?v=1774363613"
+          data-right-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0002_SIDNEY-SPICE_da7f756c-e2c6-40cf-bd08-999f888359fc.png?v=1774363613"
+          data-right-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0009_GARBALLY-GREY_243ab527-50d5-4954-9c69-3c52d760cfef.png?v=1774363613"
+          data-right-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0007_IRON-MOUNTAIN_c0bb8c57-f745-4441-830f-1a4dfb899ef2.png?v=1774363613"
+          data-right-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0012_CEMENT_e91cedc6-e3a2-4930-90c2-be5541b84c5d.png?v=1774363613"
+          data-right-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0008_HERITAGE-BROWN_2677f578-0ff6-41b6-af32-9884da599460.png?v=1774363613"
+          data-right-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Side-Units_0011_EBONY_b97ce979-49be-404a-80f1-80acdc068187.png?v=1774363613"
+        ></div>
+      </div>
+
+      <div
+        class="lower-door-assets"
+        data-left-flat="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawer-Bottom-Left-_1.png?v=1773792425"
+        data-right-flat="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawer-Bottom-Right-_1.png?v=1773792413"
+        data-left-shaker="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawer-Bottom-Left-Shaker-_1.png?v=1773852725"
+        data-right-shaker="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Flat-Drawer-Bottom-Right-Shaker_1.png?v=1773852995"
+
+        data-left-flat-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_46be327f-b8fc-4c8d-bb05-b775bb8f861e.png?v=1773866472"
+        data-left-flat-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_a62f1171-b718-4847-9ba2-a00285915236.png?v=1773866471"
+        data-left-flat-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_0cf6b58d-5c7f-46fb-93a0-188c79bae24b.png?v=1773866472"
+        data-left-flat-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_019da214-fe24-4844-ac36-54e8d035a016.png?v=1773866472"
+        data-left-flat-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_c4963463-75b1-4b10-9a71-90dc370590ba.png?v=1773866472"
+        data-left-flat-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_d6d50ae9-2f45-41d6-9743-5cbeb5f0a3ca.png?v=1773866471"
+        data-left-flat-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_1c55b583-82cb-4424-a7da-0a266914d429.png?v=1773866472"
+        data-left-flat-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_b402fc15-6c11-4eec-a6b9-d16a0c179197.png?v=1773866472"
+        data-left-flat-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_4fe5f43b-2190-4342-94b0-8f478318c9b7.png?v=1773866472"
+        data-left-flat-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_77e7f7ef-f8b5-4d83-a329-6ad3c43788fa.png?v=1773866472"
+        data-left-flat-garbally-grey="PASTE_LOWER_LEFT_FLAT_GARBALLY_GREY_URL"
+        data-left-flat-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_beadc2a8-83ff-420f-b3cd-bc933914c617.png?v=1773866472"
+        data-left-flat-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_5553b8f7-ec60-4d3d-bae5-fd1429b7920f.png?v=1773866472"
+        data-left-flat-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_4d4f72bd-9e54-49a3-b2f5-04c399162e45.png?v=1773866471"
+        data-left-flat-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_bad650b5-9b3b-424b-a421-4830a2c5f305.png?v=1773866472"
+
+        data-right-flat-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_df7a691a-a6d1-48b5-9101-ec2505182eee.png?v=1773866891"
+        data-right-flat-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_f364f042-f63d-4e4d-8abc-1cb241628dce.png?v=1773866891"
+        data-right-flat-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_42c94864-7b8c-4400-bbe1-163224eed73d.png?v=1773866891"
+        data-right-flat-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_c9227ded-fbc8-428d-aee4-89308c5c7899.png?v=1773866890"
+        data-right-flat-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_dc522c76-111d-4f32-ad92-24ae0929207e.png?v=1773866891"
+        data-right-flat-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_222a77bb-dead-4b98-a4a6-9b5db6ccdb6f.png?v=1773866891"
+        data-right-flat-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_3e4af277-0b23-4c90-b3b0-5424caf4baed.png?v=1773866891"
+        data-right-flat-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_7ff5c4c2-9666-48a5-b063-2b44bff0ecb6.png?v=1773866890"
+        data-right-flat-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_73fc74b4-1a21-4992-926a-472d888415fa.png?v=1773866891"
+        data-right-flat-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_19ec52f9-3d82-4e93-8ef2-7a17136ea7b9.png?v=1773866891"
+        data-right-flat-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_bdbee434-98b3-48ff-ae0b-21cbbf17383a.png?v=1773866891"
+        data-right-flat-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_0451b1a0-8c0e-4730-9d6b-0f79b59da56c.png?v=1773866890"
+        data-right-flat-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_d276df49-c76e-420a-8620-fe444298c71a.png?v=1773866891"
+        data-right-flat-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_fe09a468-e29c-41a7-b8d6-dbf0102c5b10.png?v=1773866891"
+        data-right-flat-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_09497f7b-44c6-4b2a-a90c-5b328aa68c6b.png?v=1773866890"
+
+        data-left-shaker-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_83d31a71-442a-4c76-8b10-3380a7b14f58.png?v=1773867420"
+        data-left-shaker-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_48a617b3-1770-49c1-9ded-10b1f675f659.png?v=1773867420"
+        data-left-shaker-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_bc75cfc7-1f55-4c3c-a8fc-4d622d23a1f1.png?v=1773867420"
+        data-left-shaker-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_097f785e-64ec-4972-a201-d6de4b151e7b.png?v=1773867420"
+        data-left-shaker-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_71b2a05a-c37f-4227-a060-138c47650412.png?v=1773867420"
+        data-left-shaker-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_cd2a16d1-cfca-42d0-8c41-d0b89ff14920.png?v=1773867420"
+        data-left-shaker-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_cc08eed1-b6b4-4636-8769-07552982a1c3.png?v=1773867420"
+        data-left-shaker-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_50a580e0-5a90-4ae9-8f70-00c5fb1d26a2.png?v=1773867419"
+        data-left-shaker-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_c06baa88-660b-4461-8332-1fc9ec40efa8.png?v=1773867420"
+        data-left-shaker-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_62e1c499-f638-492e-a144-01c44d5ce65f.png?v=1773867420"
+        data-left-shaker-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_6d4174a5-c8bb-4e8a-bb95-cea07ebadd11.png?v=1773867420"
+        data-left-shaker-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_eb5b778d-2f3f-472c-9cb4-c372db3d056c.png?v=1773867420"
+        data-left-shaker-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_fc0a37ba-132d-4ade-a516-92bb0717faf8.png?v=1773867419"
+        data-left-shaker-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_4c8aaa53-a3ec-423f-8ea1-d79e85314733.png?v=1773867419"
+        data-left-shaker-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_45d6d64c-a59d-44e4-93eb-958e1b6b25f4.png?v=1773867419"
+
+        data-right-shaker-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_c54f3063-dbce-4375-ae52-45b45f2beb15.png?v=1773867933"
+        data-right-shaker-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_3b035dc5-3f35-4530-96ff-296533d85a75.png?v=1773867932"
+        data-right-shaker-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_b0bbd054-c8c0-40f5-b319-8d7bc4b79ae0.png?v=1773867932"
+        data-right-shaker-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_69dfb4c0-e194-446f-97f0-a505cdf1cb48.png?v=1773867932"
+        data-right-shaker-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_f74370fa-0893-4396-9a13-86827686d793.png?v=1773871214"
+        data-right-shaker-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_5dfa980e-a9fb-46e7-a4c4-a5f1df814e68.png?v=1773867932"
+        data-right-shaker-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_27912538-f4d5-43b2-aa54-00f4eea09922.png?v=1773867932"
+        data-right-shaker-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_62745785-9257-4e12-8f79-ad088ce90a25.png?v=1773867932"
+        data-right-shaker-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_6c3eb689-c537-457a-b2db-e85bc4453720.png?v=1773867932"
+        data-right-shaker-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_192b7791-6fc9-4578-bcae-eed3f5f0c870.png?v=1773867932"
+        data-right-shaker-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_d406594b-b76d-4f4b-b653-e545a9b1a3d1.png?v=1773867932"
+        data-right-shaker-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_13a81a3b-f1b1-4674-8bef-4eb2750edbc5.png?v=1773867932"
+        data-right-shaker-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_5851b366-b4d4-4adf-a4b5-5d875405113d.png?v=1773867933"
+        data-right-shaker-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_f74fd08f-dd28-4960-902e-c4d55b542bd9.png?v=1773867933"
+        data-right-shaker-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_e486a6cf-3b66-4d5f-8fff-afae7f7d0a5c.png?v=1773867932"
+
+        data-left-flat-wide-default="PASTE_LEFT_FLAT_22WIDE_DEFAULT_URL"
+        data-left-flat-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_0ac7b07c-726a-4e01-a5d7-fa4ffd5c4bbf.png?v=1774363927"
+        data-left-flat-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_47e7f44b-0b71-43e5-a149-403bcf01a03b.png?v=1774363927"
+        data-left-flat-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_4803597f-8315-4641-a41b-471a382bf128.png?v=1774363927"
+        data-left-flat-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_ba82b51b-43fa-402f-9c8a-602390369807.png?v=1774363927"
+        data-left-flat-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_592478a5-97a5-44a2-afa5-97f363415324.png?v=1774363927"
+        data-left-flat-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_683b1c32-5d7a-4d2d-bb76-cbe1eb411222.png?v=1774363927"
+        data-left-flat-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_18792389-c223-42b9-b949-2f583c494e91.png?v=1774363927"
+        data-left-flat-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_e6d12aa5-9679-4c7b-94a8-6d24f5a91549.png?v=1774363927"
+        data-left-flat-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_49afb2f3-fdd9-49ea-b5c2-35b04a22997c.png?v=1774363927"
+        data-left-flat-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_4fab399b-9530-4faa-bef4-8cd244398a7f.png?v=1774363927"
+        data-left-flat-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_90e0a809-a392-4986-b9e1-175adb992468.png?v=1774363927"
+        data-left-flat-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_e0a98b0c-64bf-40bb-8922-186e66c7a866.png?v=1774363927"
+        data-left-flat-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_3cd7e55a-8bb9-425c-a72f-2d34d7304897.png?v=1774363927"
+        data-left-flat-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_0db912c4-d65f-4ca3-b292-300a503b7469.png?v=1774363927"
+        data-left-flat-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_be0eec4e-87c0-4cf8-be29-8fbd72a93a35.png?v=1774363926"
+
+        data-right-flat-wide-default="PASTE_RIGHT_FLAT_22WIDE_DEFAULT_URL"
+        data-right-flat-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0006_LIGHT-WALNUT_9ecf7293-4560-41e4-86d0-ce42db51001a.png?v=1774364146"
+        data-right-flat-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0010_FRUITWOOD_e72ed724-90bf-47e5-af03-25431c5415d6.png?v=1774364136"
+        data-right-flat-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0004_OLDMASTERS-PECAN_4b046587-82fe-4f2d-abd1-7b374fb8eed2.png?v=1774364128"
+        data-right-flat-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0005_MEDIUM-MAHOGANY_dfc7dd95-e23a-401d-9c1b-6f07a2417788.png?v=1774364128"
+        data-right-flat-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0003_SADDLE-BROWN_e2afa91d-fc7d-4df5-9a6a-fd0163c4178c.png?v=1774364128"
+        data-right-flat-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0000_TEXAS-BROWN_e404052f-1905-4057-b1d4-d1fef602c05c.png?v=1774364128"
+        data-right-flat-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0001_SUNKISSED-EARTH_24c47916-c463-44b0-bdd3-97c97ea4cd04.png?v=1774364137"
+        data-right-flat-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0013_BROWN-CHERRY_4753594c-926d-4666-b845-b2ed2256560f.png?v=1774364128"
+        data-right-flat-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0014_ARBUTUS_b0cdd14d-fed8-405a-b6e8-bf0ebcca365e.png?v=1774364128"
+        data-right-flat-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0002_SIDNEY-SPICE_80963edd-e3c9-4a00-8838-d3eec4252572.png?v=1774364129"
+        data-right-flat-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0009_GARBALLY-GREY_6ad6fcdc-854e-4a40-bed4-2d534c1455b1.png?v=1774364140"
+        data-right-flat-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0007_IRON-MOUNTAIN_1afc62c2-8134-4d14-b953-1cf5add8ee28.png?v=1774364128"
+        data-right-flat-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0012_CEMENT_325a4adb-69fb-4bf6-a150-bf8545efd741.png?v=1774364129"
+        data-right-flat-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0008_HERITAGE-BROWN_bb0cde78-40cb-42c2-9ddb-41c03365638b.png?v=1774364128"
+        data-right-flat-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0011_EBONY_6724ad9f-4281-4118-9b6f-ac424edbec00.png?v=1774364128"
+
+        data-left-shaker-wide-default="PASTE_LEFT_SHAKER_22WIDE_DEFAULT_URL"
+        data-left-shaker-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_a6be23e1-4553-476c-8629-ff114d20a7f7.png?v=1774370989"
+        data-left-shaker-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_4b9f002c-17b0-475d-ac43-0d81d01a9569.png?v=1774370988"
+        data-left-shaker-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_fb3b7cf2-8e16-4e6e-aa4b-916ab08df38a.png?v=1774370988"
+        data-left-shaker-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_5439dea5-eaf4-4694-a32e-54293e90af0d.png?v=1774370988"
+        data-left-shaker-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_0c9a12f9-dc01-49f8-b049-10b6304f08aa.png?v=1774370989"
+        data-left-shaker-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_e4e95c69-8a63-48ae-b3c6-218c830e1c35.png?v=1774370989"
+        data-left-shaker-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_60106542-3697-4440-a665-756be69b502e.png?v=1774370989"
+        data-left-shaker-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_110456ef-8708-4dec-89f9-b5ce85ff6342.png?v=1774370988"
+        data-left-shaker-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_f5af8ccb-bbab-41ed-927d-7288412efd6d.png?v=1774370988"
+        data-left-shaker-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_f74c3520-1cf2-4e6b-910c-f9761c05809f.png?v=1774370989"
+        data-left-shaker-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_97afde7b-daf4-4eaf-9459-ad5123d7ae26.png?v=1774370989"
+        data-left-shaker-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_aeafba31-724b-4c13-8f8a-1b5b5ad1cc57.png?v=1774370988"
+        data-left-shaker-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_e0a0e83a-a28f-44cd-be7d-76350901cb87.png?v=1774370988"
+        data-left-shaker-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_20d4db51-25bb-4ed4-8305-3c425090485c.png?v=1774370988"
+        data-left-shaker-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_961702dc-51f7-430e-8c2b-f41af6ab51ce.png?v=1774370988"
+
+        data-right-shaker-wide-default="PASTE_RIGHT_SHAKER_22WIDE_DEFAULT_URL"
+        data-right-shaker-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0006_LIGHT-WALNUT_fe3de7e0-fd49-4983-81e7-5296f795525b.png?v=1774371483"
+        data-right-shaker-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0010_FRUITWOOD_684f94d3-650e-4413-aecf-7b241aadfdcc.png?v=1774371483"
+        data-right-shaker-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0004_OLDMASTERS-PECAN_e7aa6d63-fd92-43a8-9b84-962b7a6721cb.png?v=1774371483"
+        data-right-shaker-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0005_MEDIUM-MAHOGANY_ed42d09c-936f-435a-b822-bec9bc1e0dd0.png?v=1774371483"
+        data-right-shaker-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0003_SADDLE-BROWN_cf924c30-c65b-4994-b074-7eb1a5632b15.png?v=1774371483"
+        data-right-shaker-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0000_TEXAS-BROWN_7c658d4b-aa3b-4ac5-9e5d-acc26700474c.png?v=1774371483"
+        data-right-shaker-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0001_SUNKISSED-EARTH_dd571636-8941-4d8d-85ac-886b99afe332.png?v=1774371483"
+        data-right-shaker-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0013_BROWN-CHERRY_9d64b9dd-506c-4d55-9ae5-377463b402e2.png?v=1774371483"
+        data-right-shaker-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0014_ARBUTUS_95246da7-df0f-4aae-995c-06457b79fcd9.png?v=1774371483"
+        data-right-shaker-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0002_SIDNEY-SPICE_3f2337df-5441-462c-84a1-034ba43ab63a.png?v=1774371483"
+        data-right-shaker-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0009_GARBALLY-GREY_a7dd45a7-a37d-4be1-8abc-eed11914bdfb.png?v=1774371483"
+        data-right-shaker-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0007_IRON-MOUNTAIN_b2f281a8-a427-4d0b-8f0a-d7949eb2793c.png?v=1774371483"
+        data-right-shaker-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0012_CEMENT_0dd38638-7c4c-4766-a229-ab831e3ab391.png?v=1774371483"
+        data-right-shaker-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0008_HERITAGE-BROWN_1468728f-3b4c-44d2-9954-4800f0f179b0.png?v=1774371483"
+        data-right-shaker-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0011_EBONY_063c6e44-6853-4f01-aa1d-fa95f95dc4a1.png?v=1774371483"
+      ></div>
+      <div
+        class="tray-assets"
+        data-left-default="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Pull-Out-Tray-Left_1_41934e8b-a9f4-469c-9804-38b73d148888.png?v=1773869750"
+        data-left-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_8c1bc61a-0d10-48de-86e7-d6bc3f80171b.png?v=1773857261"
+        data-left-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_83a65fdd-1ce8-40e2-8891-01480e45466b.png?v=1773857261"
+        data-left-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_c47d46b2-ab1f-4615-ae2d-0fb804c569ba.png?v=1773857261"
+        data-left-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_2e01eb58-700c-43cd-9b7e-2ec1a9e48a2b.png?v=1773857261"
+        data-left-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_85890044-e67d-44cb-8d50-3562fbde6550.png?v=1773857261"
+        data-left-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_5e1e2a26-f261-4eb6-8f97-481f2584bda8.png?v=1773857261"
+        data-left-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_cf40eaec-3904-4626-82d5-900b7d9b89c8.png?v=1773857261"
+        data-left-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_4c52ea11-91e6-4d56-93ed-1160e28e8ee1.png?v=1773857261"
+        data-left-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_6ad04003-5bbb-40c7-83aa-b2a45abe1ec4.png?v=1773857261"
+        data-left-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_7bf277e7-605e-4821-b3d5-6493878f2875.png?v=1773857261"
+        data-left-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_5781e7f1-4042-4ae7-86e3-200fb0b9a5fe.png?v=1773857276"
+        data-left-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_90e6f1d2-f2b5-4390-9107-c099f5f0cd27.png?v=1773857261"
+        data-left-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_a624435a-15c5-4d5d-ae85-2d94cc2a3e7c.png?v=1773857261"
+        data-left-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_4d169db5-fb96-4057-a641-c62218df1b73.png?v=1773857261"
+        data-left-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_0d240035-d53a-4c44-b919-bd84a9f4faf0.png?v=1773857261"
+
+        data-right-default="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/Pull-Out-Tray-Right_2.png?v=1773869750"
+        data-right-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/LIGHT_WALNUT_30ef4b73-8596-4a07-8c36-158cadbaf7de.png?v=1773858085"
+        data-right-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/FRUITWOOD_04f06861-6ca3-4c86-83f9-cd05a7ce13eb.png?v=1773858085"
+        data-right-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/OLDMASTERS_PECAN_318c2faf-43fb-4489-b6c8-948de8c039f5.png?v=1773858085"
+        data-right-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/MEDIUM_MAHOGANY_94cffd2b-6806-48ec-9b17-a1016b550ca9.png?v=1773858085"
+        data-right-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SADDLE_BROWN_db4ea3eb-70ac-49a9-bc93-09838dd9fd8a.png?v=1773858085"
+        data-right-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/TEXAS_BROWN_cf7dcb4a-5de6-45bf-8445-2fe25d1b78ea.png?v=1773858085"
+        data-right-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SUNKISSED_EARTH_4016f780-ec9e-49e7-b12b-fb2f188f829f.png?v=1773858085"
+        data-right-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/BROWN_CHERRY_6e2e2419-87a0-4392-a5f8-c1285b8d5cdc.png?v=1773858085"
+        data-right-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/ARBUTUS_f3d182f8-1a1f-4cd1-afa1-d0b7ebef6f0f.png?v=1773858085"
+        data-right-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/SIDNEY_SPICE_cf321719-903d-460f-ba56-d71a8d35c075.png?v=1773858085"
+        data-right-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/GARBALLY_GREY_b7548acb-c299-4260-a1a0-bf7c993962dc.png?v=1773858085"
+        data-right-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/IRON_MOUNTAIN_5df8aff6-0400-4240-b128-1e3d6d9b1305.png?v=1773858085"
+        data-right-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/CEMENT_465ac14a-fd64-4fb3-9a7b-bed37f2ed696.png?v=1773858085"
+        data-right-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/HERITAGE_BROWN_1b852de2-0a54-413a-bc62-b11c4a9184c4.png?v=1773858085"
+        data-right-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/EBONY_35791f97-c511-4ccd-aaf3-524ae6906b17.png?v=1773858085"
+
+        data-left-wide-default="PASTE_LEFT_TRAY_22WIDE_DEFAULT_URL"
+        data-left-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0007_LIGHT-WALNUT.png?v=1774380316"
+        data-left-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0011_FRUITWOOD.png?v=1774380315"
+        data-left-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0005_OLDMASTERS-PECAN.png?v=1774380315"
+        data-left-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0006_MEDIUM-MAHOGANY.png?v=1774380315"
+        data-left-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0003_SADDLE-BROWN_fa953fc7-c341-45b6-9720-26381f29f858.png?v=1774380315"
+        data-left-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0000_TEXAS-BROWN_e2d7e641-5f2e-4cc8-8950-18e48c201821.png?v=1774380316"
+        data-left-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0001_SUNKISSED-EARTH_5ccf480b-2f2c-4799-aa90-9d5097cef2ef.png?v=1774380316"
+        data-left-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0014_BROWN-CHERRY.png?v=1774380316"
+        data-left-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0015_ARBUTUS.png?v=1774380316"
+        data-left-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0002_SIDNEY-SPICE_a5b509f7-6bb8-4d90-9249-04ebb43f58cd.png?v=1774380316"
+        data-left-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0010_GARBALLY-GREY.png?v=1774380316"
+        data-left-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0008_IRON-MOUNTAIN.png?v=1774380316"
+        data-left-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0013_CEMENT.png?v=1774380316"
+        data-left-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0009_HERITAGE-BROWN.png?v=1774380316"
+        data-left-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/1_0012_EBONY.png?v=1774380315"
+
+        data-right-wide-default="PASTE_RIGHT_TRAY_22WIDE_DEFAULT_URL"
+        data-right-wide-light-walnut="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0007_LIGHT-WALNUT.png?v=1774380988"
+        data-right-wide-oldmasters-fruitwood="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0011_FRUITWOOD.png?v=1774380988"
+        data-right-wide-oldmasters-pecan="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0005_OLDMASTERS-PECAN.png?v=1774380988"
+        data-right-wide-medium-mahogany="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0006_MEDIUM-MAHOGANY.png?v=1774380989"
+        data-right-wide-saddle-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0003_SADDLE-BROWN_a1be4fa7-ed46-413b-84c9-575cfedc644d.png?v=1774380988"
+        data-right-wide-texas-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0000_TEXAS-BROWN_a34852ed-bbcf-4b9f-b370-a80181790334.png?v=1774380988"
+        data-right-wide-sunkissed-earth="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0001_SUNKISSED-EARTH_611e8516-004b-4407-8be0-ad703d715986.png?v=1774380988"
+        data-right-wide-sc10-brown-cherry="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0014_BROWN-CHERRY.png?v=1774380988"
+        data-right-wide-sc16-arbutus="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0015_ARBUTUS.png?v=1774380988"
+        data-right-wide-sidney-spice="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0002_SIDNEY-SPICE_97e47ede-8598-481a-aae3-6360b063371a.png?v=1774380988"
+        data-right-wide-garbally-grey="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0010_GARBALLY-GREY.png?v=1774380989"
+        data-right-wide-sc23-iron-mountain="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0008_IRON-MOUNTAIN.png?v=1774380988"
+        data-right-wide-sc21-cement="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0013_CEMENT.png?v=1774380988"
+        data-right-wide-sc13-heritage-brown="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0009_HERITAGE-BROWN.png?v=1774380988"
+        data-right-wide-sc4-ebony="https://cdn.shopify.com/s/files/1/0698/4836/7174/files/2_0012_EBONY.png?v=1774380988"
+      ></div>
+    </div>
+
+    <!-- SUMMARY -->
+
+    <div class="summary-container wizard-summary-container">
+      <div class="wizard-live-total">
+        <div class="wizard-live-total__copy">
+          <span>Configured Total</span>
+          <small>Updates instantly as options change</small>
+        </div>
+        <div class="wizard-live-total__amount">
+          <span>CAD</span>
+          <strong>$<span id="total-price">2695</span></strong>
+        </div>
+      </div>
+
+      <div class="wizard-price-breakdown">
+        <span>Base <strong>$<span id="base-price">2695</span></strong></span>
+        <span>Add-ons <strong>$<span id="addons-price">0</span></strong></span>
+      </div>
+
+      <div class="wizard-deposit-summary" aria-live="polite">
+        <div class="wizard-deposit-summary__row">
+          <span>Full Order Total</span>
+          <strong id="deposit-full-order-total">CAD $2,695.00</strong>
+        </div>
+        <div class="wizard-deposit-summary__row wizard-deposit-summary__row--today">
+          <span>Due Today — 50% Deposit</span>
+          <strong id="deposit-due-today">CAD $1,347.50</strong>
+        </div>
+        <div class="wizard-deposit-summary__row">
+          <span>Remaining 50% — Due After Professional Installation Service</span>
+          <strong id="deposit-remaining">CAD $1,347.50</strong>
+        </div>
+        <p>Pay 50% today to confirm your Murphy bed order. After professional installation service is completed, our team will contact you to collect the remaining 50%. No automatic second charge will be made.</p>
+        <small>Sales Tax is calculated securely by the checkout service and added at checkout.</small>
+      </div>
+
+      <div class="wizard-validation-message" id="wizard-validation-message" aria-live="polite"></div>
+
+      <form method="post" action="/cart/add" id="murphy-form">
+        <input type="hidden" name="id" id="variant-id" value="{{ murphy_variant_id }}">
+
+        <input type="hidden" name="properties[Size]" id="size-field">
+        <input type="hidden" name="properties[Door]" id="door-field">
+        <input type="hidden" name="properties[Crown]" id="crown-field">
+        <input type="hidden" name="properties[Left Side]" id="left-side-field">
+        <input type="hidden" name="properties[Right Side]" id="right-side-field">
+        <input type="hidden" name="properties[Finish]" id="finish-field">
+        <input type="hidden" name="properties[Color]" id="color-field">
+        <input type="hidden" name="properties[Mattress]" id="mattress-field">
+        <input type="hidden" name="properties[Lights]" id="lights-field">
+        <input type="hidden" name="properties[Face Frame Construction]" id="face-frame-field">
+        <input type="hidden" name="properties[Addons Summary]" id="addons-field">
+        <input type="hidden" name="properties[Calculated Price]" id="total-price-field" value="">
+
+        <input type="hidden" name="properties[Paint Color Name]" id="paint-color-name-field" value="">
+        <input type="hidden" name="properties[Paint Color Code]" id="paint-color-code-field" value="">
+        <input type="hidden" name="properties[Paint Source]" id="paint-source-field" value="">
+
+        <input type="hidden" name="properties[Stain Color Name]" id="stain-color-name-field" value="">
+        <input type="hidden" name="properties[Stain Color Code]" id="stain-color-code-field" value="">
+        <input type="hidden" name="properties[Stain Source]" id="stain-source-field" value="">
+
+        <div class="wizard-navigation">
+          <button type="button" class="wizard-nav-button wizard-nav-button--back" id="wizard-back">Back</button>
+          <button type="button" class="wizard-nav-button wizard-nav-button--next" id="wizard-next">Next Step -></button>
+          <button type="submit" class="btn wizard-checkout-button" id="wizard-checkout" hidden>Pay 50% Deposit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" id="stain-preview-map">
+  {}
+</script>
+<script src="{{ 'murphy-bed-builder.js' | asset_url }}" defer></script>
+<link rel="stylesheet" href="{{ 'murphy-bed-builder.css' | asset_url }}">
+
+{% schema %}
+{
+  "name": "Murphy Bed Builder",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Build Your Murphy Bed"
+    },
+    {
+      "type": "url",
+      "id": "room_visualizer_endpoint",
+      "label": "AI room visualizer Worker URL",
+      "info": "Paste the deployed Cloudflare Worker URL without a trailing slash."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Murphy Bed Builder"
+    }
+  ]
+}
+{% endschema %}
