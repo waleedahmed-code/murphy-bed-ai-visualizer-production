@@ -1,11 +1,9 @@
-# Island Murphy Beds AI Room Visualizer
+# Island Murphy Beds — AI Room Visualizer
 
-Production integration package for the existing Shopify Murphy Bed Builder.
+- `cloudflare-worker/` — Workers AI (SDXL img2img) API: `/api/health`, `/api/generate-room-preview`.
+- `shopify/` — complete Liquid section, CSS and JS for the Murphy Bed Builder.
+- `DEPLOYMENT-GUIDE.md` — GitHub, Cloudflare and Shopify steps.
 
-## Contents
-
-- `cloudflare-worker/`: Workers AI image-to-image API.
-- `shopify/`: complete updated Liquid, CSS and JavaScript files.
-- `DEPLOYMENT-GUIDE.md`: GitHub, Cloudflare and Shopify deployment steps.
-
-The browser composites the exact visible Murphy Bed layers onto the customer's room photo. Cloudflare Workers AI then adds a low-strength realism pass. Uploaded photos are processed in memory and are not stored by this package.
+The browser captures the exact visible bed layers, lets the customer position them on their
+room photo, and sends the composite to the Worker for a low-strength realism pass.
+Photos are processed in memory and never stored.
