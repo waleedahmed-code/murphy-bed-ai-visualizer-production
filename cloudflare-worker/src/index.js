@@ -1,16 +1,20 @@
 /**
- * Island Murphy Beds — AI Room Visualizer Worker
+ * Island Murphy Beds — AI Room Visualizer Worker (FLUX.2 on Workers AI)
  *
  * POST /api/generate-room-preview  (multipart/form-data)
- *   image      JPG/PNG/WebP composite (room photo + configured bed), <= 8 MB
- *   width      composite width  (256–2048, multiple of 8)   optional
- *   height     composite height (256–2048, multiple of 8)   optional
+ *   image      composite (room + positioned bed), JPG/PNG/WebP, < 512 px each side
+ *   product    configured bed alone, JPG/PNG/WebP, < 512 px each side   (optional)
+ *   width      output width  (256–1920)
+ *   height     output height (256–1920)
  *   size, doorStyle, crown, finish, leftCabinet, rightCabinet   optional text
  *
- * GET /api/health  -> { ok: true }
+ * GET /api/health
+ *
+ * NOTE: SDXL on Workers AI does NOT accept image input (error 3030), so this
+ * Worker uses FLUX.2 reference-image editing instead.
  */
 
-const MODEL = "@cf/stabilityai/stable-diffusion-xl-base-1.0";
+const DEFAULT_MODEL = "@cf/black-forest-labs/flux-2-klein-9b";
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const VALID_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
@@ -64,16 +68,7 @@ function cleanText(value, maxLength = 140) {
 function dimension(value, fallback) {
   const n = Math.round(Number(value));
   if (!Number.isFinite(n) || n <= 0) return fallback;
-  return Math.min(2048, Math.max(256, Math.round(n / 8) * 8));
-}
-
-function toBase64(bytes) {
-  let binary = "";
-  const chunk = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunk) {
-    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
-  }
-  return btoa(binary);
+  return Math.min(1920, Math.max(256, Math.round(n / 16) * 16));
 }
 
 async function generate(request, env) {
@@ -114,6 +109,9 @@ async function generate(request, env) {
     return json(request, env, { error: "Image must be 8 MB or smaller." }, 413);
   }
 
+  const product = formData.get("product");
+  const hasProduct = product && typeof product !== "string" && product.size > 0 && VALID_TYPES.includes(product.type);
+
   const width = dimension(formData.get("width"), 1024);
   const height = dimension(formData.get("height"), 768);
 
@@ -127,47 +125,73 @@ async function generate(request, env) {
   ].filter(Boolean).join(", ");
 
   const prompt = [
-    "Photorealistic interior photograph of this exact room with a built-in wall bed cabinet (Murphy bed) standing against the wall.",
-    "Keep the room architecture, floor, walls, windows, furniture and camera angle unchanged.",
-    "Keep the cabinet exactly as shown: same shape, doors, crown molding, side cabinets, proportions and finish colour.",
-    "Natural indoor lighting, realistic contact shadow where the cabinet meets the floor, sharp focus, high detail.",
-    configuration ? `Cabinet details: ${configuration}.` : ""
+    "Turn image 0 into a photorealistic interior photograph of the same room.",
+    "Image 0 already shows the customer's room with a wall bed cabinet (Murphy bed) placed where it should stand.",
+    hasProduct
+      ? "Image 1 is the exact product: keep the cabinet identical to image 1 — same shape, door panels, crown molding, side cabinets, proportions and finish colour."
+      : "Keep the cabinet identical — same shape, door panels, crown molding, side cabinets, proportions and finish colour.",
+    "Keep the cabinet in the same position and size as in image 0, standing flat against the wall on the floor.",
+    "Keep the room unchanged: same walls, floor, windows, furniture, colours and camera angle.",
+    "Blend the cabinet naturally with matching perspective, indoor lighting, reflections and a soft contact shadow on the floor.",
+    "Do not add another bed or any extra furniture. No text, no watermark.",
+    configuration ? `Product details: ${configuration}.` : ""
   ].filter(Boolean).join(" ");
 
-  const negativePrompt =
-    "extra bed, duplicate furniture, distorted cabinet, warped lines, floating furniture, blurry, cartoon, painting, text, watermark, people";
-
-  const bytes = new Uint8Array(await image.arrayBuffer());
-  const strength = Math.min(0.45, Math.max(0.1, Number(env.AI_STRENGTH) || 0.25));
-
-  const baseInputs = {
-    prompt,
-    negative_prompt: negativePrompt,
-    width,
-    height,
-    strength,
-    guidance: 7.5,
-    num_steps: 20
-  };
-
-  let output;
-  try {
-    output = await env.AI.run(MODEL, { ...baseInputs, image_b64: toBase64(bytes) });
-  } catch (firstError) {
-    // Fallback for accounts/models that only accept the byte-array input.
-    console.warn("image_b64 input failed, retrying with byte array", String(firstError));
-    output = await env.AI.run(MODEL, { ...baseInputs, image: Array.from(bytes) });
+  const aiForm = new FormData();
+  aiForm.append("prompt", prompt);
+  aiForm.append("input_image_0", new Blob([await image.arrayBuffer()], { type: image.type }), "room.jpg");
+  if (hasProduct) {
+    aiForm.append("input_image_1", new Blob([await product.arrayBuffer()], { type: product.type }), "product.jpg");
   }
+  aiForm.append("width", String(width));
+  aiForm.append("height", String(height));
+  if (env.AI_GUIDANCE) aiForm.append("guidance", String(Number(env.AI_GUIDANCE)));
 
-  return new Response(output, {
+  // FormData must be serialized to get the multipart boundary header.
+  const serialized = new Response(aiForm);
+  const model = env.AI_MODEL || DEFAULT_MODEL;
+
+  const output = await env.AI.run(model, {
+    multipart: {
+      body: serialized.body,
+      contentType: serialized.headers.get("content-type")
+    }
+  });
+
+  const png = await imageBytesFromOutput(output);
+
+  return new Response(png.bytes, {
     status: 200,
     headers: {
       ...corsHeaders(request, env),
-      "Content-Type": "image/png",
+      "Content-Type": png.type,
       "Cache-Control": "no-store",
       "X-Content-Type-Options": "nosniff"
     }
   });
+}
+
+/* Workers AI image models return either { image: "<base64>" } or raw bytes/stream. */
+async function imageBytesFromOutput(output) {
+  let bytes;
+  if (output && typeof output.image === "string") {
+    const b64 = output.image.replace(/^data:[^,]+,/, "");
+    const bin = atob(b64);
+    bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  } else if (output instanceof ReadableStream) {
+    bytes = new Uint8Array(await new Response(output).arrayBuffer());
+  } else if (output instanceof ArrayBuffer) {
+    bytes = new Uint8Array(output);
+  } else if (output instanceof Uint8Array) {
+    bytes = output;
+  } else {
+    throw new Error("Unexpected AI output: " + JSON.stringify(output).slice(0, 300));
+  }
+  if (!bytes || bytes.length < 100) throw new Error("AI returned an empty image.");
+  const isPng = bytes[0] === 0x89 && bytes[1] === 0x50;
+  const isJpg = bytes[0] === 0xff && bytes[1] === 0xd8;
+  return { bytes, type: isPng ? "image/png" : isJpg ? "image/jpeg" : "image/png" };
 }
 
 export default {
@@ -184,6 +208,7 @@ export default {
           ok: true,
           service: "murphy-bed-room-visualizer",
           aiBinding: Boolean(env.AI),
+          model: env.AI_MODEL || DEFAULT_MODEL,
           allowedOrigins: allowedOrigins(env)
         });
       }
@@ -195,8 +220,12 @@ export default {
       return json(request, env, { error: "Not found." }, 404);
     } catch (error) {
       // Always return CORS headers so the browser shows a readable error.
-      console.error("Room visualizer failure", error && (error.stack || error.message || error));
-      return json(request, env, { error: "The room preview could not be generated. Please try again." }, 502);
+      const detail = String((error && (error.message || error)) || "unknown").slice(0, 300);
+      console.error("Room visualizer failure", detail, error && error.stack);
+      return json(request, env, {
+        error: "The room preview could not be generated. Please try again.",
+        detail
+      }, 502);
     }
   }
 };
