@@ -9,14 +9,6 @@
   "ai": {
     "binding": "AI"
   },
-  // Fixed open-bed references (mechanism + mattress photos), deployed with the Worker.
-  // run_worker_first keeps them private: nothing is served publicly, the Worker
-  // reads them internally through env.REFERENCES.
-  "assets": {
-    "directory": "./reference-images",
-    "binding": "REFERENCES",
-    "run_worker_first": true
-  },
   // Server-side abuse protection: max 5 generations per visitor IP per minute.
   "ratelimits": [
     {
