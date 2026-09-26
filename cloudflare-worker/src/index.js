@@ -21,7 +21,7 @@
  */
 
 const DEFAULT_MODEL = "@cf/black-forest-labs/flux-2-klein-9b";
-const VERSION = "2026-09-26-closed-open";
+const VERSION = "2026-09-26-v5-auto-wall";
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const MAX_REFERENCE_INPUT_BYTES = 3 * 1024 * 1024;
 // Workers AI: "All input images must be smaller than 512x512."
@@ -303,25 +303,26 @@ function configurationText(details) {
 }
 
 const OPEN_STATE_RULES = [
-  "How the open bed must look, exactly like image 3 (a real photo of this Murphy bed open, seen from the front):",
-  "the tall centre section of the cabinet (the big door panels) is the bed itself. When open, those centre door panels are no longer standing up:",
-  "the centre of the cabinet becomes an empty recessed opening showing the plain inside back panel and the inner side walls of the cabinet;",
-  "the bed has pivoted down at the bottom of the opening and now lies flat, extending straight out from the wall toward the camera;",
-  "on it lies a thick made mattress like image 4, top quilted surface facing up and clearly visible, its side border facing the camera;",
-  "the foot of the bed is held up by the black metal fold-down leg frame, like image 3, standing on the floor;",
-  "the side cabinets, shelves, drawers, lower doors and crown moulding stay exactly as they are, closed and unchanged."
+  "Image 3 is ONLY a shape guide showing how this type of Murphy bed looks when open, seen from the front.",
+  "Do not copy anything else from image 3: not its white cabinet colour, not its beige back panel, not any room, rug, floor or lighting.",
+  "How the open bed must look: the tall centre section of the cabinet (the big door panels) is the bed itself, so when open those door panels are no longer standing up.",
+  "The centre of the cabinet becomes a recessed opening showing the inside back panel and inner side walls, made in the SAME wood finish and colour as the customer's cabinet in image 1.",
+  "The bed has pivoted down at the bottom of the opening and lies flat, extending straight out from the wall toward the camera; its side rails and end panel use the same wood finish as the cabinet.",
+  "On it lies a thick, neatly made mattress like image 4, quilted top facing up and clearly visible, side border facing the camera.",
+  "The foot of the bed is held up by a slim black metal fold-down leg frame standing on the room's own floor.",
+  "The side cabinets, shelves, drawers, lower doors and crown moulding stay exactly as in image 1, closed and unchanged."
 ].join(" ");
 
-// Scene mode: image 1 already shows the customer's exact CLOSED bed placed in the room.
+// Scene mode: image 1 is a close-up of the customer's room with their exact CLOSED bed already placed.
 export function buildOpenFromScenePrompt(details) {
   const configuration = configurationText(details);
   return [
-    "Edit image 1. It is a real photo of a customer's room with their closed Murphy wall-bed cabinet already standing against the wall.",
+    "Edit image 1. It is a close-up photo of a customer's room with their closed Murphy wall-bed cabinet standing flat against the wall on the floor.",
     "Change only one thing: open the Murphy bed.",
     OPEN_STATE_RULES,
-    "Image 2 is the same configured cabinet front for reference: keep its finish colour, crown, side units and proportions.",
-    "Keep the cabinet in exactly the same position and size, and keep the room unchanged: same camera angle, framing, walls, floor, windows, furniture, lighting and colours.",
-    "Photorealistic, correct perspective, soft contact shadows under the bed. No people, no extra furniture, no text, no watermark.",
+    "Image 2 is the same configured cabinet front: keep its wood finish, grain, colour, crown, side units and proportions.",
+    "Keep the cabinet in exactly the same position and size. Keep the room exactly as in image 1: same wall, same floor material, same camera angle, framing and lighting. Do not add rugs, plants, furniture or decorations.",
+    "Photorealistic, sharp, correct perspective, soft contact shadow under the bed on the floor. No people, no text, no watermark.",
     configuration ? `Product details: ${configuration}.` : ""
   ].filter(Boolean).join(" ");
 }
