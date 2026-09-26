@@ -4,7 +4,13 @@
  * The CLOSED view is composed in the browser from the builder's exact bed image.
  * This Worker only makes the OPEN view.
  *
- * POST /api/generate-open-view   (multipart/form-data)   <- used by the theme
+ * POST /api/generate-room-render (multipart/form-data)   <- used by the theme (v6)
+ *   scene     close-up of the room with the exact configured bed placed (< 512 px each side)
+ *   product   exact configured bed front from #preview-stage (< 512 px)
+ *   bedState  "closed" (default here, 2 input images, no stored references needed)
+ *             or "open" (adds the stored open-example + mattress references)
+ *
+ * POST /api/generate-open-view   (multipart/form-data)   open bed (bedState defaults to "open")
  *   scene     room photo with the exact CLOSED bed already placed (< 512 px each side)
  *   product   exact configured bed front from #preview-stage (< 512 px)
  *   width, height (256–1920, rounded to 16), seed (optional)
@@ -21,7 +27,7 @@
  */
 
 const DEFAULT_MODEL = "@cf/black-forest-labs/flux-2-klein-9b";
-const VERSION = "2026-09-26-v5-auto-wall";
+const VERSION = "2026-09-26-v6-room-render";
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const MAX_REFERENCE_INPUT_BYTES = 3 * 1024 * 1024;
 // Workers AI: "All input images must be smaller than 512x512."
@@ -327,6 +333,21 @@ export function buildOpenFromScenePrompt(details) {
   ].filter(Boolean).join(" ");
 }
 
+// Closed render: image 1 is a close-up of the room with the exact closed cabinet already placed.
+export function buildClosedRenderPrompt(details) {
+  const configuration = configurationText(details);
+  return [
+    "Turn image 1 into a high-quality photorealistic interior photograph.",
+    "Image 1 is a close-up of a customer's room where a closed Murphy wall-bed cabinet has already been placed flat against the wall, standing on the floor.",
+    "Image 2 is the exact cabinet the customer designed. Keep the cabinet identical to image 2: same door panels, handles, crown moulding, side units, shelves, drawers, proportions and the same wood finish, stain colour and grain.",
+    "Keep the cabinet in exactly the same position and size as in image 1. Do not open it, do not add a bed or mattress.",
+    "Make it look really built into this room: correct perspective, the room's own light direction and colour temperature on the cabinet, realistic wood texture, a soft contact shadow where it meets the floor and a subtle shadow on the wall.",
+    "Keep the room exactly as in image 1: same wall, floor, windows, furniture, camera angle and framing. Do not add rugs, plants, furniture or decorations.",
+    "Sharp, clean, natural. No people, no text, no watermark.",
+    configuration ? `Product details: ${configuration}.` : ""
+  ].filter(Boolean).join(" ");
+}
+
 // Room mode: image 1 is the empty room; the AI places the cabinet itself (kept for compatibility).
 export function buildRoomBedPrompt(details) {
   const configuration = configurationText(details);
@@ -340,23 +361,28 @@ export function buildRoomBedPrompt(details) {
   ].filter(Boolean).join(" ");
 }
 
-async function generateOpenBed(request, env) {
+async function generateOpenBed(request, env, defaultState = "open") {
   const blocked = await guardRequest(request, env);
   if (blocked) return blocked;
-
-  const picked = pickReferences(await loadReferences(env));
-  if (!picked.ok) {
-    return json(request, env, {
-      error: "The room preview is not configured yet. Please contact the store team.",
-      detail: picked.error
-    }, 503);
-  }
 
   let formData;
   try {
     formData = await request.formData();
   } catch {
     return json(request, env, { error: "The upload could not be read." }, 400);
+  }
+  const bedState = String(formData.get("bedState") || defaultState).toLowerCase() === "closed" ? "closed" : "open";
+
+  // Closed renders need no stored references; open renders need the open guide + mattress.
+  let picked = null;
+  if (bedState === "open") {
+    picked = pickReferences(await loadReferences(env));
+    if (!picked.ok) {
+      return json(request, env, {
+        error: "The room preview is not configured yet. Please contact the store team.",
+        detail: picked.error
+      }, 503);
+    }
   }
 
   const sceneMode = Boolean(formData.get("scene"));
@@ -385,14 +411,18 @@ async function generateOpenBed(request, env) {
     rightCabinet: cleanText(formData.get("rightCabinet")),
     mattress: cleanText(formData.get("mattress"))
   };
-  const prompt = sceneMode ? buildOpenFromScenePrompt(details) : buildRoomBedPrompt(details);
+  const prompt = bedState === "closed"
+    ? buildClosedRenderPrompt(details)
+    : sceneMode ? buildOpenFromScenePrompt(details) : buildRoomBedPrompt(details);
 
   const aiForm = new FormData();
   aiForm.append("prompt", prompt);
   aiForm.append("input_image_0", new Blob([baseBytes], { type: base.file.type }), "room");
   aiForm.append("input_image_1", new Blob([productBytes], { type: product.file.type }), "product");
-  aiForm.append("input_image_2", new Blob([picked.guide.bytes], { type: picked.guide.type }), "open-guide");
-  aiForm.append("input_image_3", new Blob([picked.mattress.bytes], { type: picked.mattress.type }), "mattress");
+  if (picked) {
+    aiForm.append("input_image_2", new Blob([picked.guide.bytes], { type: picked.guide.type }), "open-guide");
+    aiForm.append("input_image_3", new Blob([picked.mattress.bytes], { type: picked.mattress.type }), "mattress");
+  }
   aiForm.append("width", String(width));
   aiForm.append("height", String(height));
   if (seed !== null) aiForm.append("seed", String(seed));
@@ -501,14 +531,19 @@ export default {
           aiBinding: Boolean(env.AI),
           model: env.AI_MODEL || DEFAULT_MODEL,
           allowedOrigins: allowedOrigins(env),
+          renderReady: Boolean(env.AI),
           openViewReady: Boolean(env.AI) && Boolean(pickReferences(references).ok),
           references
         });
       }
 
+      if (request.method === "POST" && url.pathname === "/api/generate-room-render") {
+        return await generateOpenBed(request, env, "closed");
+      }
+
       if (request.method === "POST" &&
           (url.pathname === "/api/generate-room-bed" || url.pathname === "/api/generate-open-view")) {
-        return await generateOpenBed(request, env);
+        return await generateOpenBed(request, env, "open");
       }
 
       if (request.method === "POST" && url.pathname === "/api/generate-room-preview") {
