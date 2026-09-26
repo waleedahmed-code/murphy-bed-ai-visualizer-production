@@ -1,32 +1,35 @@
 /**
  * Island Murphy Beds — AI Room Visualizer Worker (FLUX.2 [klein] 9B on Workers AI)
  *
- * POST /api/generate-room-bed   (multipart/form-data)   <- used by the theme
- *   room      customer's room photo (< 512 px each side, resized in the browser)
- *   product   exact configured bed front, auto-captured from #preview-stage (< 512 px)
- *   width     output width  (256–1920, rounded to 16)
- *   height    output height (256–1920, rounded to 16)
- *   seed      optional integer ("Try another version" changes it)
+ * The CLOSED view is composed in the browser from the builder's exact bed image.
+ * This Worker only makes the OPEN view.
+ *
+ * POST /api/generate-open-view   (multipart/form-data)   <- used by the theme
+ *   scene     room photo with the exact CLOSED bed already placed (< 512 px each side)
+ *   product   exact configured bed front from #preview-stage (< 512 px)
+ *   width, height (256–1920, rounded to 16), seed (optional)
  *   size, doorStyle, crown, finish, leftCabinet, rightCabinet, mattress   optional text
  *
- *   The Worker attaches the fixed references itself (never sent by the customer):
- *     input_image_2 = reference-images/mechanism.(jpg|png|webp)
- *     input_image_3 = reference-images/mattress.(jpg|png|webp)
- *   The AI places the bed on the wall and renders it OPEN from the front, mattress visible.
+ * POST /api/generate-room-bed    same, but "room" = empty room; the AI places the bed itself.
  *
- * POST /api/generate-open-view     (v2 alias: accepts "scene" instead of "room")
+ * Fixed references attached by the Worker (never sent by the customer), from reference-images/:
+ *   input_image_2 = open-example.jpg (your bed open, front view)  — or mechanism.jpg as fallback
+ *   input_image_3 = mattress.jpg
+ *
  * POST /api/generate-room-preview  (LEGACY v1 — only for an old cached theme script)
  * GET  /api/health
  */
 
 const DEFAULT_MODEL = "@cf/black-forest-labs/flux-2-klein-9b";
-const VERSION = "2026-09-26-room-bed";
+const VERSION = "2026-09-26-closed-open";
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const MAX_REFERENCE_INPUT_BYTES = 3 * 1024 * 1024;
 // Workers AI: "All input images must be smaller than 512x512."
 const MAX_INPUT_EDGE = 511;
 const VALID_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const REFERENCE_NAMES = ["mechanism", "mattress"];
+// open-example = a real photo of YOUR bed open, seen from the front (strongest guide).
+// mechanism is used only when open-example is missing.
+const REFERENCE_NAMES = ["open-example", "mattress", "mechanism"];
 const REFERENCE_EXTENSIONS = [
   ["jpg", "image/jpeg"],
   ["jpeg", "image/jpeg"],
@@ -189,8 +192,28 @@ async function loadReferences(env) {
   const binding = env.REFERENCES;
   if (binding && typeof binding === "object" && referenceCache.has(binding)) return referenceCache.get(binding);
   const refs = await Promise.all(REFERENCE_NAMES.map((name) => loadReference(env, name)));
-  if (binding && typeof binding === "object" && refs.every((ref) => ref.ok)) referenceCache.set(binding, refs);
+  if (binding && typeof binding === "object" && pickReferences(refs).ok) referenceCache.set(binding, refs);
   return refs;
+}
+
+/*
+ * Chooses the two fixed references sent with every request:
+ *   slot A = open-example (preferred) or mechanism
+ *   slot B = mattress
+ * Accepts the array from loadReferences() or the summary object from /api/health.
+ */
+export function pickReferences(refs) {
+  const byName = Array.isArray(refs)
+    ? Object.fromEntries(refs.map((ref) => [ref.name, ref]))
+    : refs || {};
+  const guide = byName["open-example"] && byName["open-example"].ok
+    ? byName["open-example"]
+    : byName.mechanism && byName.mechanism.ok ? byName.mechanism : null;
+  const mattress = byName.mattress && byName.mattress.ok ? byName.mattress : null;
+  const problems = [];
+  if (!guide) problems.push("Add reference-images/open-example.jpg (your bed open, front view) or mechanism.jpg.");
+  if (!mattress) problems.push((byName.mattress && byName.mattress.error) || "Add reference-images/mattress.jpg.");
+  return { ok: Boolean(guide && mattress), guide, mattress, error: problems.join(" ") };
 }
 
 function referenceSummary(refs) {
@@ -266,9 +289,9 @@ function imageResponse(request, env, png, extraHeaders = {}) {
   });
 }
 
-/* ---------- prompt: place the configured bed and show it OPEN ---------- */
-export function buildRoomBedPrompt(details) {
-  const configuration = [
+/* ---------- prompts ---------- */
+function configurationText(details) {
+  return [
     details.size && `bed size ${details.size}`,
     details.doorStyle && `door style ${details.doorStyle}`,
     details.crown && `crown ${details.crown}`,
@@ -277,36 +300,54 @@ export function buildRoomBedPrompt(details) {
     details.rightCabinet && `right side ${details.rightCabinet}`,
     details.mattress && `mattress ${details.mattress}`
   ].filter(Boolean).join("; ");
+}
 
+const OPEN_STATE_RULES = [
+  "How the open bed must look, exactly like image 3 (a real photo of this Murphy bed open, seen from the front):",
+  "the tall centre section of the cabinet (the big door panels) is the bed itself. When open, those centre door panels are no longer standing up:",
+  "the centre of the cabinet becomes an empty recessed opening showing the plain inside back panel and the inner side walls of the cabinet;",
+  "the bed has pivoted down at the bottom of the opening and now lies flat, extending straight out from the wall toward the camera;",
+  "on it lies a thick made mattress like image 4, top quilted surface facing up and clearly visible, its side border facing the camera;",
+  "the foot of the bed is held up by the black metal fold-down leg frame, like image 3, standing on the floor;",
+  "the side cabinets, shelves, drawers, lower doors and crown moulding stay exactly as they are, closed and unchanged."
+].join(" ");
+
+// Scene mode: image 1 already shows the customer's exact CLOSED bed placed in the room.
+export function buildOpenFromScenePrompt(details) {
+  const configuration = configurationText(details);
   return [
-    "Edit image 1, a real photo of a customer's room.",
-    "Add the Murphy wall-bed cabinet shown in image 2 to this room and show the bed OPEN.",
-    details.placement
-      ? `Place the cabinet here: ${details.placement} of the image.`
-      : "Place the cabinet flat against the main back wall facing the camera, centred on the largest clear wall area, standing on the floor, at realistic full-height scale for the room. Do not block doors or windows if avoidable.",
-    "Image 2 is the exact product the customer configured: keep the cabinet frame, side cabinets, drawers, upper doors, crown moulding, proportions and finish colour identical to image 2.",
-    "The bed is open, seen from the front: the large centre bed panel has pivoted down from the cabinet toward the viewer and lies horizontal, extending straight out from the wall toward the camera with its foot resting on the floor.",
-    "The decorative front panel from image 2 is now the underside of the opened bed, facing the floor.",
-    "Build the opened bed frame, legs and the visible inside of the cabinet like the real mechanism in image 3.",
-    "A made mattress like the real mattress in image 4 lies flat on top of the opened bed, facing up and clearly visible.",
-    "Side cabinets, drawers, upper doors and crown stay closed.",
-    "Keep everything else in the room unchanged: same camera angle, framing, walls, floor, windows, furniture, lighting and colours.",
-    "Correct perspective, realistic indoor lighting and soft contact shadows on the floor.",
-    "Do not add people, extra furniture, text or watermarks.",
+    "Edit image 1. It is a real photo of a customer's room with their closed Murphy wall-bed cabinet already standing against the wall.",
+    "Change only one thing: open the Murphy bed.",
+    OPEN_STATE_RULES,
+    "Image 2 is the same configured cabinet front for reference: keep its finish colour, crown, side units and proportions.",
+    "Keep the cabinet in exactly the same position and size, and keep the room unchanged: same camera angle, framing, walls, floor, windows, furniture, lighting and colours.",
+    "Photorealistic, correct perspective, soft contact shadows under the bed. No people, no extra furniture, no text, no watermark.",
     configuration ? `Product details: ${configuration}.` : ""
   ].filter(Boolean).join(" ");
 }
 
-async function generateRoomBed(request, env) {
+// Room mode: image 1 is the empty room; the AI places the cabinet itself (kept for compatibility).
+export function buildRoomBedPrompt(details) {
+  const configuration = configurationText(details);
+  return [
+    "Edit image 1, a real photo of a customer's room.",
+    "Add the Murphy wall-bed cabinet shown in image 2 flat against the main back wall facing the camera, standing on the floor, centred on the largest clear wall area, at realistic full-height scale, and show it open.",
+    "Keep the cabinet's finish colour, crown, side units and proportions identical to image 2.",
+    OPEN_STATE_RULES,
+    "Keep everything else in the room unchanged. Photorealistic, correct perspective. No people, no extra furniture, no text, no watermark.",
+    configuration ? `Product details: ${configuration}.` : ""
+  ].filter(Boolean).join(" ");
+}
+
+async function generateOpenBed(request, env) {
   const blocked = await guardRequest(request, env);
   if (blocked) return blocked;
 
-  const refs = await loadReferences(env);
-  const missing = refs.filter((ref) => !ref.ok);
-  if (missing.length) {
+  const picked = pickReferences(await loadReferences(env));
+  if (!picked.ok) {
     return json(request, env, {
       error: "The room preview is not configured yet. Please contact the store team.",
-      detail: missing.map((ref) => ref.error).join(" ")
+      detail: picked.error
     }, 503);
   }
 
@@ -317,15 +358,16 @@ async function generateRoomBed(request, env) {
     return json(request, env, { error: "The upload could not be read." }, 400);
   }
 
-  const roomField = formData.get("room") ? "room" : "scene";
-  const room = await readUpload(request, env, formData, roomField, "The room photo", true);
-  if (room.error) return room.error;
+  const sceneMode = Boolean(formData.get("scene"));
+  const baseField = sceneMode ? "scene" : "room";
+  const base = await readUpload(request, env, formData, baseField, sceneMode ? "The room preview image" : "The room photo", true);
+  if (base.error) return base.error;
   const product = await readUpload(request, env, formData, "product", "The configured bed image", true);
   if (product.error) return product.error;
 
-  const roomBytes = new Uint8Array(await room.file.arrayBuffer());
+  const baseBytes = new Uint8Array(await base.file.arrayBuffer());
   const productBytes = new Uint8Array(await product.file.arrayBuffer());
-  for (const [bytes, label] of [[roomBytes, "The room photo"], [productBytes, "The configured bed image"]]) {
+  for (const [bytes, label] of [[baseBytes, "The room image"], [productBytes, "The configured bed image"]]) {
     const problem = checkModelInput(bytes, label);
     if (problem) return json(request, env, { error: problem }, 400);
   }
@@ -333,9 +375,7 @@ async function generateRoomBed(request, env) {
   const width = dimension(formData.get("width"), 1536);
   const height = dimension(formData.get("height"), 1152);
   const seed = seedValue(formData.get("seed"));
-
-  const prompt = buildRoomBedPrompt({
-    placement: cleanText(formData.get("placement"), 90),
+  const details = {
     size: cleanText(formData.get("size")),
     doorStyle: cleanText(formData.get("doorStyle")),
     crown: cleanText(formData.get("crown")),
@@ -343,15 +383,15 @@ async function generateRoomBed(request, env) {
     leftCabinet: cleanText(formData.get("leftCabinet")),
     rightCabinet: cleanText(formData.get("rightCabinet")),
     mattress: cleanText(formData.get("mattress"))
-  });
+  };
+  const prompt = sceneMode ? buildOpenFromScenePrompt(details) : buildRoomBedPrompt(details);
 
-  const [mechanism, mattress] = refs;
   const aiForm = new FormData();
   aiForm.append("prompt", prompt);
-  aiForm.append("input_image_0", new Blob([roomBytes], { type: room.file.type }), "room");
+  aiForm.append("input_image_0", new Blob([baseBytes], { type: base.file.type }), "room");
   aiForm.append("input_image_1", new Blob([productBytes], { type: product.file.type }), "product");
-  aiForm.append("input_image_2", new Blob([mechanism.bytes], { type: mechanism.type }), "mechanism");
-  aiForm.append("input_image_3", new Blob([mattress.bytes], { type: mattress.type }), "mattress");
+  aiForm.append("input_image_2", new Blob([picked.guide.bytes], { type: picked.guide.type }), "open-guide");
+  aiForm.append("input_image_3", new Blob([picked.mattress.bytes], { type: picked.mattress.type }), "mattress");
   aiForm.append("width", String(width));
   aiForm.append("height", String(height));
   if (seed !== null) aiForm.append("seed", String(seed));
@@ -460,14 +500,14 @@ export default {
           aiBinding: Boolean(env.AI),
           model: env.AI_MODEL || DEFAULT_MODEL,
           allowedOrigins: allowedOrigins(env),
-          openViewReady: Boolean(env.AI) && REFERENCE_NAMES.every((name) => references[name] && references[name].ok),
+          openViewReady: Boolean(env.AI) && Boolean(pickReferences(references).ok),
           references
         });
       }
 
       if (request.method === "POST" &&
           (url.pathname === "/api/generate-room-bed" || url.pathname === "/api/generate-open-view")) {
-        return await generateRoomBed(request, env);
+        return await generateOpenBed(request, env);
       }
 
       if (request.method === "POST" && url.pathname === "/api/generate-room-preview") {
