@@ -4,11 +4,13 @@
  * The CLOSED view is composed in the browser from the builder's exact bed image.
  * This Worker only makes the OPEN view.
  *
- * POST /api/generate-room-render (multipart/form-data)   <- used by the theme (v6)
- *   scene     close-up of the room with the exact configured bed placed (< 512 px each side)
- *   product   exact configured bed front from #preview-stage (< 512 px)
- *   bedState  "closed" (default here, 2 input images, no stored references needed)
- *             or "open" (adds the stored open-example + mattress references)
+ * POST /api/generate-room-render (multipart/form-data)   <- used by the theme (v7)
+ *   scene     close-up of the customer's room with the exact configured bed placed
+ *             (256–2048 px each side; the theme sends ~1024 px)
+ *   seed, size, doorStyle, crown, finish, leftCabinet, rightCabinet   optional
+ *   → SDXL image-to-image refine at low strength (Worker vars: REFINE_STRENGTH,
+ *     default 0.3; REFINE_GUIDANCE, default 7.5; REFINE_MODEL). The whole image,
+ *     product included, is re-rendered photorealistically while keeping its design.
  *
  * POST /api/generate-open-view   (multipart/form-data)   open bed (bedState defaults to "open")
  *   scene     room photo with the exact CLOSED bed already placed (< 512 px each side)
@@ -27,7 +29,10 @@
  */
 
 const DEFAULT_MODEL = "@cf/black-forest-labs/flux-2-klein-9b";
-const VERSION = "2026-09-26-v6.2-errors";
+// Refine pass (used by the theme): SDXL image-to-image at low strength keeps the
+// placed bed's shape and design but re-renders light, texture and shadows.
+const DEFAULT_REFINE_MODEL = "@cf/stabilityai/stable-diffusion-xl-base-1.0";
+const VERSION = "2026-09-27-v7-sdxl-refine";
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const MAX_REFERENCE_INPUT_BYTES = 3 * 1024 * 1024;
 // Workers AI: "All input images must be smaller than 512x512."
@@ -508,6 +513,87 @@ export async function imageBytesFromOutput(output) {
   return { bytes, type: isPng ? "image/png" : isJpg ? "image/jpeg" : isWebp ? "image/webp" : "image/png" };
 }
 
+/* ---------- refine pass (SDXL img2img) ---------- */
+export function buildRefinePrompt(details) {
+  const configuration = configurationText(details);
+  return [
+    "professional interior photograph of a room with a built-in Murphy wall bed cabinet standing flat against the wall on the floor,",
+    "photorealistic, natural soft daylight, realistic wood grain and cabinet finish, crisp cabinet edges and door panels,",
+    "soft contact shadow on the floor, subtle shadow on the wall, correct perspective, high detail, sharp focus, 8k interior design photography",
+    configuration ? `, ${configuration}` : ""
+  ].join(" ").replace(/\s+,/g, ",");
+}
+
+export const REFINE_NEGATIVE_PROMPT = [
+  "blurry, low quality, distorted, warped cabinet, deformed doors, melted, extra furniture, extra bed, mattress,",
+  "open bed, people, text, watermark, logo, cartoon, illustration, painting, 3d render, oversaturated, noisy"
+].join(" ");
+
+function toBase64(bytes) {
+  let binary = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+}
+
+function numberVar(value, fallback, min, max) {
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : fallback;
+}
+
+async function generateRefine(request, env) {
+  const blocked = await guardRequest(request, env);
+  if (blocked) return blocked;
+
+  let formData;
+  try {
+    formData = await request.formData();
+  } catch {
+    return json(request, env, { error: "The upload could not be read." }, 400);
+  }
+
+  const field = formData.get("scene") ? "scene" : "image";
+  const scene = await readUpload(request, env, formData, field, "The room image", true);
+  if (scene.error) return scene.error;
+
+  const bytes = new Uint8Array(await scene.file.arrayBuffer());
+  const dims = imageDimensions(bytes);
+  if (!dims) return json(request, env, { error: "The room image could not be read as JPG, PNG or WebP." }, 400);
+  if (dims.width < 256 || dims.height < 256 || dims.width > 2048 || dims.height > 2048) {
+    return json(request, env, { error: `The room image is ${dims.width}×${dims.height}; it must be between 256 and 2048 px on each side.` }, 400);
+  }
+
+  const width = Math.max(256, Math.floor(dims.width / 8) * 8);
+  const height = Math.max(256, Math.floor(dims.height / 8) * 8);
+  const seed = seedValue(formData.get("seed"));
+  const details = {
+    size: cleanText(formData.get("size")),
+    doorStyle: cleanText(formData.get("doorStyle")),
+    crown: cleanText(formData.get("crown")),
+    finish: cleanText(formData.get("finish")),
+    leftCabinet: cleanText(formData.get("leftCabinet")),
+    rightCabinet: cleanText(formData.get("rightCabinet"))
+  };
+
+  const inputs = {
+    prompt: buildRefinePrompt(details),
+    negative_prompt: REFINE_NEGATIVE_PROMPT,
+    image_b64: toBase64(bytes),
+    strength: numberVar(env.REFINE_STRENGTH, 0.3, 0.05, 0.8),
+    guidance: numberVar(env.REFINE_GUIDANCE, 7.5, 1, 20),
+    num_steps: 20,
+    width,
+    height
+  };
+  if (seed !== null) inputs.seed = seed;
+
+  const output = await env.AI.run(env.REFINE_MODEL || DEFAULT_REFINE_MODEL, inputs);
+  const png = await imageBytesFromOutput(output);
+  return imageResponse(request, env, png, seed !== null ? { "X-Visualizer-Seed": String(seed) } : {});
+}
+
 /* Turns Workers AI error text into a clear message + short code for the page. */
 export function explainAiError(detail) {
   const text = String(detail || "");
@@ -552,13 +638,14 @@ export default {
           model: env.AI_MODEL || DEFAULT_MODEL,
           allowedOrigins: allowedOrigins(env),
           renderReady: Boolean(env.AI),
+          refineModel: env.REFINE_MODEL || DEFAULT_REFINE_MODEL,
           openViewReady: Boolean(env.AI) && Boolean(pickReferences(references).ok),
           references
         });
       }
 
       if (request.method === "POST" && url.pathname === "/api/generate-room-render") {
-        return await generateOpenBed(request, env, "closed");
+        return await generateRefine(request, env);
       }
 
       if (request.method === "POST" &&
