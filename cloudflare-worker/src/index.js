@@ -27,7 +27,7 @@
  */
 
 const DEFAULT_MODEL = "@cf/black-forest-labs/flux-2-klein-9b";
-const VERSION = "2026-09-26-v6-room-render";
+const VERSION = "2026-09-26-v6.2-errors";
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const MAX_REFERENCE_INPUT_BYTES = 3 * 1024 * 1024;
 // Workers AI: "All input images must be smaller than 512x512."
@@ -508,6 +508,26 @@ export async function imageBytesFromOutput(output) {
   return { bytes, type: isPng ? "image/png" : isJpg ? "image/jpeg" : isWebp ? "image/webp" : "image/png" };
 }
 
+/* Turns Workers AI error text into a clear message + short code for the page. */
+export function explainAiError(detail) {
+  const text = String(detail || "");
+  const codeMatch = text.match(/\b([3-9]\d{3})\b/);
+  const code = codeMatch ? codeMatch[1] : "";
+  if (/4006|neuron|daily free allocation|allocation/i.test(text)) {
+    return { status: 429, code: code || "4006", message: "Today's AI image limit for this store has been reached. Please try again tomorrow." };
+  }
+  if (/3040|capacity|overloaded|too many requests|3036|rate limit/i.test(text)) {
+    return { status: 503, code: code || "busy", message: "The AI service is busy right now. Please try again in a minute." };
+  }
+  if (/3007|timeout|timed out/i.test(text)) {
+    return { status: 504, code: code || "timeout", message: "The AI took too long. Please try again." };
+  }
+  if (/5006|input|schema|invalid|must be/i.test(text)) {
+    return { status: 400, code: code || "input", message: "The AI service rejected the image settings. Please try another photo." };
+  }
+  return { status: 502, code: code || "ai", message: "The room preview could not be generated. Please try again." };
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -555,10 +575,12 @@ export default {
       // Always return CORS headers so the browser shows a readable error.
       const detail = String((error && (error.message || error)) || "unknown").slice(0, 300);
       console.error("Room visualizer failure", detail, error && error.stack);
+      const known = explainAiError(detail);
       return json(request, env, {
-        error: "The room preview could not be generated. Please try again.",
+        error: known.message,
+        code: known.code,
         detail
-      }, 502);
+      }, known.status);
     }
   }
 };
