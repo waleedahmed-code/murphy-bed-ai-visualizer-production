@@ -32,7 +32,10 @@ const DEFAULT_MODEL = "@cf/black-forest-labs/flux-2-klein-9b";
 // Refine pass (used by the theme): SDXL image-to-image at low strength keeps the
 // placed bed's shape and design but re-renders light, texture and shadows.
 const DEFAULT_REFINE_MODEL = "@cf/stabilityai/stable-diffusion-xl-base-1.0";
-const VERSION = "2026-09-27-v7-sdxl-refine";
+// Free (beta) img2img models tried in order. A model that is missing or fails is skipped.
+// Override with the Worker variable REFINE_MODELS (comma separated).
+const DEFAULT_REFINE_CHAIN = [DEFAULT_REFINE_MODEL, "@cf/runwayml/stable-diffusion-v1-5-img2img"];
+const VERSION = "2026-09-27-v8-always-image";
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const MAX_REFERENCE_INPUT_BYTES = 3 * 1024 * 1024;
 // Workers AI: "All input images must be smaller than 512x512."
@@ -76,7 +79,7 @@ function corsHeaders(request, env) {
   const headers = {
     "Access-Control-Allow-Methods": "POST, OPTIONS, GET",
     "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Expose-Headers": "X-Visualizer-Seed, X-Visualizer-Version",
+    "Access-Control-Expose-Headers": "X-Visualizer-Seed, X-Visualizer-Version, X-Visualizer-Model",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin"
   };
@@ -589,9 +592,39 @@ async function generateRefine(request, env) {
   };
   if (seed !== null) inputs.seed = seed;
 
-  const output = await env.AI.run(env.REFINE_MODEL || DEFAULT_REFINE_MODEL, inputs);
-  const png = await imageBytesFromOutput(output);
-  return imageResponse(request, env, png, seed !== null ? { "X-Visualizer-Seed": String(seed) } : {});
+  const chain = refineChain(env);
+  const failures = [];
+  for (const model of chain) {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const modelInputs = model.includes("v1-5")
+          ? { ...inputs, width: Math.min(inputs.width, 1024), height: Math.min(inputs.height, 1024) }
+          : inputs;
+        const output = await env.AI.run(model, modelInputs);
+        const png = await imageBytesFromOutput(output);
+        const headers = { "X-Visualizer-Model": model };
+        if (seed !== null) headers["X-Visualizer-Seed"] = String(seed);
+        return imageResponse(request, env, png, headers);
+      } catch (error) {
+        const detail = String((error && (error.message || error)) || "unknown").slice(0, 200);
+        failures.push(`${model}#${attempt}: ${detail}`);
+        console.warn("Refine attempt failed", model, attempt, detail);
+        // Retry the same model only for temporary problems (busy / timeout).
+        if (!isTemporaryAiError(detail)) break;
+      }
+    }
+  }
+  throw new Error(failures.join(" | "));
+}
+
+export function refineChain(env) {
+  const configured = String(env.REFINE_MODELS || env.REFINE_MODEL || "")
+    .split(",").map((v) => v.trim()).filter(Boolean);
+  return configured.length ? configured : DEFAULT_REFINE_CHAIN;
+}
+
+export function isTemporaryAiError(detail) {
+  return /3040|capacity|overloaded|busy|3007|timeout|timed out|temporar|503|502/i.test(String(detail || ""));
 }
 
 /* Turns Workers AI error text into a clear message + short code for the page. */
@@ -638,7 +671,8 @@ export default {
           model: env.AI_MODEL || DEFAULT_MODEL,
           allowedOrigins: allowedOrigins(env),
           renderReady: Boolean(env.AI),
-          refineModel: env.REFINE_MODEL || DEFAULT_REFINE_MODEL,
+          refineModel: refineChain(env)[0],
+          refineChain: refineChain(env),
           openViewReady: Boolean(env.AI) && Boolean(pickReferences(references).ok),
           references
         });
