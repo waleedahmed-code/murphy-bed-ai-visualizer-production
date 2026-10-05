@@ -35,7 +35,7 @@ const DEFAULT_REFINE_MODEL = "@cf/stabilityai/stable-diffusion-xl-base-1.0";
 // Free (beta) img2img models tried in order. A model that is missing or fails is skipped.
 // Override with the Worker variable REFINE_MODELS (comma separated).
 const DEFAULT_REFINE_CHAIN = [DEFAULT_REFINE_MODEL, "@cf/runwayml/stable-diffusion-v1-5-img2img"];
-const VERSION = "2026-09-27-v8-always-image";
+const VERSION = "2026-10-05-v9-selftest";
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const MAX_REFERENCE_INPUT_BYTES = 3 * 1024 * 1024;
 // Workers AI: "All input images must be smaller than 512x512."
@@ -617,6 +617,49 @@ async function generateRefine(request, env) {
   throw new Error(failures.join(" | "));
 }
 
+// 512x384 test picture (wall, floor, simple cabinet) used by GET /api/selftest.
+const SELFTEST_JPEG_B64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9Pjv/2wBDAQoLCw4NDhwQEBw7KCIoOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozv/wAARCAGAAgADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD1GiiioKCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKzbvxBpdjcvbXN1slTG5fLY4yM9h6GtKvOfFX/IyXX/AAD/ANAWsqs3CN0aUoKbszr/APhKtE/5/f8AyE/+FH/CVaJ/z+/+Qn/wrzmiuf6xI6PYRPRv+Eq0T/n9/wDIT/4Uf8JVon/P7/5Cf/CvOaKPrEg9hE9G/wCEq0T/AJ/f/IT/AOFH/CVaJ/z+/wDkJ/8ACvOaKPrEg9hE9G/4SrRP+f3/AMhP/hR/wlWif8/v/kJ/8K85oo+sSD2ET0b/AISrRP8An9/8hP8A4Uf8JVon/P7/AOQn/wAK85oo+sSD2ET0b/hKtE/5/f8AyE/+FH/CVaJ/z+/+Qn/wrzmij6xIPYRPRv8AhKtE/wCf3/yE/wDhR/wlWif8/v8A5Cf/AArzmij6xIPYRPRv+Eq0T/n9/wDIT/4Uf8JVon/P7/5Cf/CvOaKPrEg9hE9G/wCEq0T/AJ/f/IT/AOFH/CVaJ/z+/wDkJ/8ACvOaKPrEg9hE9G/4SrRP+f3/AMhP/hR/wlWif8/v/kJ/8K85oo+sSD2ET0mHxLpE8yQxXe6SRgqjy3GSTgdq1K8u0j/kM2P/AF8R/wDoQr1Gt6U3NO5hVgoPQKKKK2MgooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK858Vf8jJdf8A/9AWvRq858Vf8AIyXX/AP/AEBa58R8JvQ+I529UPJCp6E4/lS/YIv7z/mKLr/X2/8Avf1FWq5L6HVbUq/YIv7z/mKPsEX95/zFWqKV2OyKv2CL+8/5ij7BF/ef8xVqii7CyKv2CL+8/wCYo+wRf3n/ADFWqKLsLIq/YIv7z/mKbbxiK9dFyQF7/hVyqsf/ACEZP93/AAp3FYS9UPJCp6E4/lS/YIv7z/mKLr/X2/8Avf1FWqL6BbUq/YIv7z/mKPsEX95/zFWqKV2OyKv2CL+8/wCYo+wRf3n/ADFWqKLsLIq/YIv7z/mKPsEX95/zFWqKLsLIq/YIv7z/AJim28YivXRckBe/4VcqrH/yEZP93/CncVjW0j/kM2P/AF8R/wDoQr1GvLtI/wCQzY/9fEf/AKEK9Rrqw+zObEboKKKK6TnCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigArznxV/yMl1/wD/0Ba9GrznxV/yMl1/wD/0Ba58R8JvQ+I566/19v/vf1FWqq3X+vt/97+oq1XG9jrW4UUUUhhRRRQAUUUUAFVY/+QjJ/u/4VaqrH/yEZP8Ad/wpoTC6/wBfb/739RVqqt1/r7f/AHv6irVD2BbhRRRSGFFFFABRRRQAVVj/AOQjJ/u/4VaqrH/yEZP93/CmhM1tI/5DNj/18R/+hCvUa8u0j/kM2P8A18R/+hCvUa68PszlxG6Ciiiuk5wooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK858Vf8AIyXX/AP/AEBa9GrznxV/yMl1/wAA/wDQFrnxHwm9D4jnrr/X2/8Avf1FWqq3X+vt/wDe/qKtVxvY61uFFFFIYUUUUAFFFFABVWP/AJCMn+7/AIVaqrH/AMhGT/d/wpoTC6/19v8A739RVqqt1/r7f/e/qKtUPYFuFFFFIYUUUUAFFFFABVWP/kIyf7v+FWqqx/8AIRk/3f8ACmhM1tI/5DNj/wBfEf8A6EK9Rry7SP8AkM2P/XxH/wChCvUa68PszlxG6Ciiiuk5wooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK858Vf8jJdf8A/9AWvRq858Vf8jJdf8A/9AWuf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";
+
+/*
+ * GET /api/selftest — runs one real refine on a built-in test picture with every model in
+ * the chain and reports, per model, whether it worked, how long it took and the exact error.
+ * Open it in a browser to see why AI images fail. Counts toward the per-IP rate limit.
+ */
+async function selfTest(request, env) {
+  if (env.RATE_LIMITER && typeof env.RATE_LIMITER.limit === "function") {
+    const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+    const { success } = await env.RATE_LIMITER.limit({ key: ip });
+    if (!success) return json(request, env, { error: "Too many tests. Wait a minute and try again." }, 429);
+  }
+  const results = [];
+  for (const model of refineChain(env)) {
+    const started = Date.now();
+    try {
+      const output = await env.AI.run(model, {
+        prompt: buildRefinePrompt({}),
+        negative_prompt: REFINE_NEGATIVE_PROMPT,
+        image_b64: SELFTEST_JPEG_B64,
+        strength: numberVar(env.REFINE_STRENGTH, 0.3, 0.05, 0.8),
+        guidance: numberVar(env.REFINE_GUIDANCE, 7.5, 1, 20),
+        num_steps: 20,
+        width: 512,
+        height: 384
+      });
+      const image = await imageBytesFromOutput(output);
+      results.push({ model, ok: true, ms: Date.now() - started, bytes: image.bytes.length, type: image.type });
+    } catch (error) {
+      const detail = String((error && (error.message || error)) || "unknown").slice(0, 300);
+      results.push({ model, ok: false, ms: Date.now() - started, error: detail, meaning: explainAiError(detail).message });
+    }
+  }
+  return json(request, env, {
+    ok: results.some((r) => r.ok),
+    version: VERSION,
+    aiBinding: Boolean(env.AI),
+    results
+  });
+}
+
 export function refineChain(env) {
   const configured = String(env.REFINE_MODELS || env.REFINE_MODEL || "")
     .split(",").map((v) => v.trim()).filter(Boolean);
@@ -678,6 +721,10 @@ export default {
         });
       }
 
+      if (request.method === "GET" && url.pathname === "/api/selftest") {
+        return await selfTest(request, env);
+      }
+
       if (request.method === "POST" && url.pathname === "/api/generate-room-render") {
         return await generateRefine(request, env);
       }
@@ -705,4 +752,3 @@ export default {
     }
   }
 };
-
