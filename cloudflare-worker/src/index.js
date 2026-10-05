@@ -35,7 +35,7 @@ const DEFAULT_REFINE_MODEL = "@cf/stabilityai/stable-diffusion-xl-base-1.0";
 // Free (beta) img2img models tried in order. A model that is missing or fails is skipped.
 // Override with the Worker variable REFINE_MODELS (comma separated).
 const DEFAULT_REFINE_CHAIN = [DEFAULT_REFINE_MODEL, "@cf/runwayml/stable-diffusion-v1-5-img2img"];
-const VERSION = "2026-10-05-v9-selftest";
+const VERSION = "2026-10-05-v10-faster";
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const MAX_REFERENCE_INPUT_BYTES = 3 * 1024 * 1024;
 // Workers AI: "All input images must be smaller than 512x512."
@@ -586,11 +586,13 @@ async function generateRefine(request, env) {
     image_b64: toBase64(bytes),
     strength: numberVar(env.REFINE_STRENGTH, 0.3, 0.05, 0.8),
     guidance: numberVar(env.REFINE_GUIDANCE, 7.5, 1, 20),
-    num_steps: 20,
+    num_steps: Math.round(numberVar(env.REFINE_STEPS, 20, 4, 20)),
     width,
     height
   };
   if (seed !== null) inputs.seed = seed;
+  const started = Date.now();
+  const budgetMs = numberVar(env.REFINE_BUDGET_MS, 30000, 5000, 120000);
 
   const chain = refineChain(env);
   const failures = [];
@@ -612,6 +614,12 @@ async function generateRefine(request, env) {
         // Retry the same model only for temporary problems (busy / timeout).
         if (!isTemporaryAiError(detail)) break;
       }
+      // Do not make the customer wait for retries once the time budget is used up.
+      if (Date.now() - started > budgetMs) break;
+    }
+    if (Date.now() - started > budgetMs) {
+      failures.push(`stopped after ${Date.now() - started} ms (time budget ${budgetMs} ms)`);
+      break;
     }
   }
   throw new Error(failures.join(" | "));
@@ -641,7 +649,7 @@ async function selfTest(request, env) {
         image_b64: SELFTEST_JPEG_B64,
         strength: numberVar(env.REFINE_STRENGTH, 0.3, 0.05, 0.8),
         guidance: numberVar(env.REFINE_GUIDANCE, 7.5, 1, 20),
-        num_steps: 20,
+        num_steps: Math.round(numberVar(env.REFINE_STEPS, 20, 4, 20)),
         width: 512,
         height: 384
       });
