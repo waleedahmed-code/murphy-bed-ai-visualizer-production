@@ -5,12 +5,11 @@
  * This Worker only makes the OPEN view.
  *
  * POST /api/generate-room-render (multipart/form-data)   <- used by the theme (v7)
- *   scene     close-up of the customer's room with the exact configured bed placed
- *             (256–2048 px each side; the theme sends ~1024 px)
+ *   scene     close-up of the customer's room with the exact configured bed placed (< 512 px)
  *   seed, size, doorStyle, crown, finish, leftCabinet, rightCabinet   optional
- *   → SDXL image-to-image refine at low strength (Worker vars: REFINE_STRENGTH,
- *     default 0.3; REFINE_GUIDANCE, default 7.5; REFINE_MODEL). The whole image,
- *     product included, is re-rendered photorealistically while keeping its design.
+ *   product   exact configured bed front (< 512 px)          width, height: AI output size
+ *   → FLUX.2 klein edit (4B, then 9B as backup): the whole close-up, product included,
+ *     is re-rendered photorealistically (wood texture, light, shadows) keeping its design.
  *
  * POST /api/generate-open-view   (multipart/form-data)   open bed (bedState defaults to "open")
  *   scene     room photo with the exact CLOSED bed already placed (< 512 px each side)
@@ -32,10 +31,13 @@ const DEFAULT_MODEL = "@cf/black-forest-labs/flux-2-klein-9b";
 // Refine pass (used by the theme): SDXL image-to-image at low strength keeps the
 // placed bed's shape and design but re-renders light, texture and shadows.
 const DEFAULT_REFINE_MODEL = "@cf/stabilityai/stable-diffusion-xl-base-1.0";
-// Free (beta) img2img models tried in order. A model that is missing or fails is skipped.
+// Refine models tried in order (live self-test 2026-10-05: SDXL no longer accepts an input
+// image (3030) and SD 1.5 img2img is not allowed on this account (5018), so both are dropped).
+// FLUX.2 klein 4B ≈ 26 neurons per output 512px tile → ~115 neurons per 1024px image
+// (~80+ images/day in the free 10,000). 9B ≈ 1,400+ neurons per image (~6–7/day) = backup.
 // Override with the Worker variable REFINE_MODELS (comma separated).
-const DEFAULT_REFINE_CHAIN = [DEFAULT_REFINE_MODEL, "@cf/runwayml/stable-diffusion-v1-5-img2img"];
-const VERSION = "2026-10-05-v10-faster";
+const DEFAULT_REFINE_CHAIN = ["@cf/black-forest-labs/flux-2-klein-4b", "@cf/black-forest-labs/flux-2-klein-9b"];
+const VERSION = "2026-10-05-v11-flux-refine";
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const MAX_REFERENCE_INPUT_BYTES = 3 * 1024 * 1024;
 // Workers AI: "All input images must be smaller than 512x512."
@@ -527,6 +529,19 @@ export function buildRefinePrompt(details) {
   ].join(" ").replace(/\s+,/g, ",");
 }
 
+// FLUX edit prompt: image 1 = placed scene, image 2 = the exact configured cabinet.
+export function buildFluxRefinePrompt(details) {
+  const configuration = configurationText(details);
+  return [
+    "Edit image 1 into a high-end photorealistic interior photograph.",
+    "Image 1 shows a customer's room with a Murphy wall-bed cabinet already placed flat against the wall on the floor. Image 2 is that exact cabinet.",
+    "Keep the cabinet's design identical to image 2: same doors, panel layout, handles, shelves, side units, crown, proportions and the same finish colour. Keep it closed, in exactly the same position and size.",
+    "Make the cabinet look like real furniture photographed in this room: realistic wood grain and material texture, crisp edges and panel grooves, natural reflections, the room's own light direction and colour temperature, a soft contact shadow on the floor and a subtle shadow on the wall.",
+    "Keep the room exactly as in image 1: same wall, floor, windows, plants and furniture, same camera angle and framing. Do not add rugs, furniture, people, text or watermarks.",
+    configuration ? `Product details: ${configuration}.` : ""
+  ].filter(Boolean).join(" ");
+}
+
 export const REFINE_NEGATIVE_PROMPT = [
   "blurry, low quality, distorted, warped cabinet, deformed doors, melted, extra furniture, extra bed, mattress,",
   "open bed, people, text, watermark, logo, cartoon, illustration, painting, 3d render, oversaturated, noisy"
@@ -546,6 +561,40 @@ function numberVar(value, fallback, min, max) {
   return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : fallback;
 }
 
+function isFluxModel(model) {
+  return /flux/i.test(model);
+}
+
+// One model call. FLUX = multipart edit with reference images (each < 512 px);
+// other (SD-style) models = JSON img2img. A new body is built for every attempt.
+async function runRefineModel(env, model, job) {
+  if (isFluxModel(model)) {
+    const form = new FormData();
+    form.append("prompt", job.fluxPrompt);
+    form.append("input_image_0", new Blob([job.sceneBytes], { type: job.sceneType }), "scene");
+    if (job.productBytes) form.append("input_image_1", new Blob([job.productBytes], { type: job.productType }), "product");
+    form.append("width", String(job.width));
+    form.append("height", String(job.height));
+    if (job.seed !== null) form.append("seed", String(job.seed));
+    const serialized = new Response(form);
+    return env.AI.run(model, {
+      multipart: { body: serialized.body, contentType: serialized.headers.get("content-type") }
+    });
+  }
+  const inputs = {
+    prompt: job.sdPrompt,
+    negative_prompt: REFINE_NEGATIVE_PROMPT,
+    image_b64: toBase64(job.sceneBytes),
+    strength: job.strength,
+    guidance: job.guidance,
+    num_steps: job.steps,
+    width: Math.min(2048, Math.max(256, Math.floor(job.sceneWidth / 8) * 8)),
+    height: Math.min(2048, Math.max(256, Math.floor(job.sceneHeight / 8) * 8))
+  };
+  if (job.seed !== null) inputs.seed = job.seed;
+  return env.AI.run(model, inputs);
+}
+
 async function generateRefine(request, env) {
   const blocked = await guardRequest(request, env);
   if (blocked) return blocked;
@@ -560,17 +609,24 @@ async function generateRefine(request, env) {
   const field = formData.get("scene") ? "scene" : "image";
   const scene = await readUpload(request, env, formData, field, "The room image", true);
   if (scene.error) return scene.error;
+  const product = await readUpload(request, env, formData, "product", "The configured bed image", false);
+  if (product.error) return product.error;
 
-  const bytes = new Uint8Array(await scene.file.arrayBuffer());
-  const dims = imageDimensions(bytes);
+  const sceneBytes = new Uint8Array(await scene.file.arrayBuffer());
+  const dims = imageDimensions(sceneBytes);
   if (!dims) return json(request, env, { error: "The room image could not be read as JPG, PNG or WebP." }, 400);
-  if (dims.width < 256 || dims.height < 256 || dims.width > 2048 || dims.height > 2048) {
-    return json(request, env, { error: `The room image is ${dims.width}×${dims.height}; it must be between 256 and 2048 px on each side.` }, 400);
+  const productBytes = product.file ? new Uint8Array(await product.file.arrayBuffer()) : null;
+
+  const chain = refineChain(env);
+  if (chain.some(isFluxModel)) {
+    // FLUX inputs must be smaller than 512 x 512.
+    for (const [bytes, label] of [[sceneBytes, "The room image"], [productBytes, "The configured bed image"]]) {
+      if (!bytes) continue;
+      const problem = checkModelInput(bytes, label);
+      if (problem && chain.every(isFluxModel)) return json(request, env, { error: problem }, 400);
+    }
   }
 
-  const width = Math.max(256, Math.floor(dims.width / 8) * 8);
-  const height = Math.max(256, Math.floor(dims.height / 8) * 8);
-  const seed = seedValue(formData.get("seed"));
   const details = {
     size: cleanText(formData.get("size")),
     doorStyle: cleanText(formData.get("doorStyle")),
@@ -579,54 +635,54 @@ async function generateRefine(request, env) {
     leftCabinet: cleanText(formData.get("leftCabinet")),
     rightCabinet: cleanText(formData.get("rightCabinet"))
   };
-
-  const inputs = {
-    prompt: buildRefinePrompt(details),
-    negative_prompt: REFINE_NEGATIVE_PROMPT,
-    image_b64: toBase64(bytes),
+  const job = {
+    sceneBytes,
+    sceneType: scene.file.type,
+    sceneWidth: dims.width,
+    sceneHeight: dims.height,
+    productBytes,
+    productType: product.file ? product.file.type : "",
+    width: dimension(formData.get("width"), 1024),
+    height: dimension(formData.get("height"), 768),
+    seed: seedValue(formData.get("seed")),
+    fluxPrompt: buildFluxRefinePrompt(details),
+    sdPrompt: buildRefinePrompt(details),
     strength: numberVar(env.REFINE_STRENGTH, 0.3, 0.05, 0.8),
     guidance: numberVar(env.REFINE_GUIDANCE, 7.5, 1, 20),
-    num_steps: Math.round(numberVar(env.REFINE_STEPS, 20, 4, 20)),
-    width,
-    height
+    steps: Math.round(numberVar(env.REFINE_STEPS, 20, 4, 20))
   };
-  if (seed !== null) inputs.seed = seed;
+
   const started = Date.now();
   const budgetMs = numberVar(env.REFINE_BUDGET_MS, 30000, 5000, 120000);
-
-  const chain = refineChain(env);
   const failures = [];
   for (const model of chain) {
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
-        const modelInputs = model.includes("v1-5")
-          ? { ...inputs, width: Math.min(inputs.width, 1024), height: Math.min(inputs.height, 1024) }
-          : inputs;
-        const output = await env.AI.run(model, modelInputs);
+        const output = await runRefineModel(env, model, job);
         const png = await imageBytesFromOutput(output);
         const headers = { "X-Visualizer-Model": model };
-        if (seed !== null) headers["X-Visualizer-Seed"] = String(seed);
+        if (job.seed !== null) headers["X-Visualizer-Seed"] = String(job.seed);
         return imageResponse(request, env, png, headers);
       } catch (error) {
         const detail = String((error && (error.message || error)) || "unknown").slice(0, 200);
         failures.push(`${model}#${attempt}: ${detail}`);
         console.warn("Refine attempt failed", model, attempt, detail);
-        // Retry the same model only for temporary problems (busy / timeout).
-        if (!isTemporaryAiError(detail)) break;
+        if (!isTemporaryAiError(detail)) break;   // retry only busy / timeout
       }
-      // Do not make the customer wait for retries once the time budget is used up.
       if (Date.now() - started > budgetMs) break;
     }
     if (Date.now() - started > budgetMs) {
       failures.push(`stopped after ${Date.now() - started} ms (time budget ${budgetMs} ms)`);
       break;
     }
+    // Daily neuron limit applies to every model on the account: do not try the next one.
+    if (/4006|neuron|daily free allocation/i.test(failures[failures.length - 1] || "")) break;
   }
   throw new Error(failures.join(" | "));
 }
 
-// 512x384 test picture (wall, floor, simple cabinet) used by GET /api/selftest.
-const SELFTEST_JPEG_B64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9Pjv/2wBDAQoLCw4NDhwQEBw7KCIoOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozv/wAARCAGAAgADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD1GiiioKCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKzbvxBpdjcvbXN1slTG5fLY4yM9h6GtKvOfFX/IyXX/AAD/ANAWsqs3CN0aUoKbszr/APhKtE/5/f8AyE/+FH/CVaJ/z+/+Qn/wrzmiuf6xI6PYRPRv+Eq0T/n9/wDIT/4Uf8JVon/P7/5Cf/CvOaKPrEg9hE9G/wCEq0T/AJ/f/IT/AOFH/CVaJ/z+/wDkJ/8ACvOaKPrEg9hE9G/4SrRP+f3/AMhP/hR/wlWif8/v/kJ/8K85oo+sSD2ET0b/AISrRP8An9/8hP8A4Uf8JVon/P7/AOQn/wAK85oo+sSD2ET0b/hKtE/5/f8AyE/+FH/CVaJ/z+/+Qn/wrzmij6xIPYRPRv8AhKtE/wCf3/yE/wDhR/wlWif8/v8A5Cf/AArzmij6xIPYRPRv+Eq0T/n9/wDIT/4Uf8JVon/P7/5Cf/CvOaKPrEg9hE9G/wCEq0T/AJ/f/IT/AOFH/CVaJ/z+/wDkJ/8ACvOaKPrEg9hE9G/4SrRP+f3/AMhP/hR/wlWif8/v/kJ/8K85oo+sSD2ET0mHxLpE8yQxXe6SRgqjy3GSTgdq1K8u0j/kM2P/AF8R/wDoQr1Gt6U3NO5hVgoPQKKKK2MgooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK858Vf8jJdf8A/9AWvRq858Vf8AIyXX/AP/AEBa58R8JvQ+I529UPJCp6E4/lS/YIv7z/mKLr/X2/8Avf1FWq5L6HVbUq/YIv7z/mKPsEX95/zFWqKV2OyKv2CL+8/5ij7BF/ef8xVqii7CyKv2CL+8/wCYo+wRf3n/ADFWqKLsLIq/YIv7z/mKbbxiK9dFyQF7/hVyqsf/ACEZP93/AAp3FYS9UPJCp6E4/lS/YIv7z/mKLr/X2/8Avf1FWqL6BbUq/YIv7z/mKPsEX95/zFWqKV2OyKv2CL+8/wCYo+wRf3n/ADFWqKLsLIq/YIv7z/mKPsEX95/zFWqKLsLIq/YIv7z/AJim28YivXRckBe/4VcqrH/yEZP93/CncVjW0j/kM2P/AF8R/wDoQr1GvLtI/wCQzY/9fEf/AKEK9Rrqw+zObEboKKKK6TnCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigArznxV/yMl1/wD/0Ba9GrznxV/yMl1/wD/0Ba58R8JvQ+I566/19v/vf1FWqq3X+vt/97+oq1XG9jrW4UUUUhhRRRQAUUUUAFVY/+QjJ/u/4VaqrH/yEZP8Ad/wpoTC6/wBfb/739RVqqt1/r7f/AHv6irVD2BbhRRRSGFFFFABRRRQAVVj/AOQjJ/u/4VaqrH/yEZP93/CmhM1tI/5DNj/18R/+hCvUa8u0j/kM2P8A18R/+hCvUa68PszlxG6Ciiiuk5wooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK858Vf8AIyXX/AP/AEBa9GrznxV/yMl1/wAA/wDQFrnxHwm9D4jnrr/X2/8Avf1FWqq3X+vt/wDe/qKtVxvY61uFFFFIYUUUUAFFFFABVWP/AJCMn+7/AIVaqrH/AMhGT/d/wpoTC6/19v8A739RVqqt1/r7f/e/qKtUPYFuFFFFIYUUUUAFFFFABVWP/kIyf7v+FWqqx/8AIRk/3f8ACmhM1tI/5DNj/wBfEf8A6EK9Rry7SP8AkM2P/XxH/wChCvUa68PszlxG6Ciiiuk5wooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK858Vf8jJdf8A/9AWvRq858Vf8jJdf8A/9AWuf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";
+// 504x378 test picture (wall, floor, simple cabinet) used by GET /api/selftest.
+const SELFTEST_JPEG_B64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAF6AfgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD1qiiioKCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAZNIIYZJWztjQuQOpAGf6VzK+OdNIH+jXeMf3U/xrodR/wCQfdf9cJP/AEE14+v3R9K569SULWN6NOM9z0H/AITjTf8An2u/++U/xo/4TjTf+fa7/wC+U/xrzszwhiplQEdRmk+0Q/8APVPzrH28zb2MD0X/AITjTf8An2u/++U/xo/4TjTf+fa7/wC+U/xrzr7RD/z1T86PtEP/AD1T86PbzD2MD0X/AITjTf8An2u/++U/xo/4TjTf+fa7/wC+U/xrzr7RD/z1T86PtEP/AD1T86PbzD2MD0X/AITjTf8An2u/++U/xo/4TjTf+fa7/wC+U/xrzr7RD/z1T86PtEP/AD1T86PbzD2MD0X/AITjTf8An2u/++U/xo/4TjTf+fa7/wC+U/xrzr7RD/z1T86kBBGQcjGc0e3mHsYHoP8AwnGm/wDPtd/98p/jR/wnGm/8+13/AN8p/jXnX2iD/nqn50faIf8Anqn50e3mHsYHov8AwnGm/wDPtd/98p/jR/wnGm/8+13/AN8p/jXnX2iH/nqn50faIf8Anqn50e3mHsYHov8AwnGm/wDPtd/98p/jR/wnGm/8+13/AN8p/jXnX2iH/nqn50faIf8Anqn50e3mHsYHov8AwnGm/wDPtd/98p/jR/wnGm/8+13/AN8p/jXnX2iH/nqn50faIf8Anqn50e3mHsYHov8AwnGm/wDPtd/98p/jR/wnGm/8+136fdT/ABrzr7RD/wA9U/OpRR7eYexgev6feJqFlDdxKypMu5QwAIGSO30qxWT4V/5F3T/+uX/sxrWrsi7pM45KzsFFFFUIKKKKACiiigAo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P+fu3/7/AC/415ZgegowPQUe3fYPq67npl/eWpsLkC6gJMLgASr/AHT715Kv3QO+KvYHoPyowPSsqknM0pwUCnSY9v0q7gelGB6Vnymtylj2/SjHt+lXcD0owPSjlFcpY9v0ox7fpV3A9KMD0o5QuUse36UY9v0q7gelGB6UcoXKX4UtXMD0owPSjlHcpnntSY9v0q7gelGB6UcoXKWPb9KMe36VdwPSjA9KOUVylj2/SjHt+lXcD0owPSjlC5Sx7fpRj2/SruB6UYHpRyhcpfhS/hVzA9KMD0FHKO53/he7tk8P2CSXEKMIuVaRQRyfU1qfbrT/AJ+7f/v8v+NeWYHoPyowPQV0Ks0kjndFNtnqf220/wCfu3/7/L/jR9ttP+fu3/7/AC/415ZgegowPQflT9u+wvq67nqf220/5+7f/v8AL/jR9ttP+fu3/wC/y/415Zgeg/KjA9B+VHt32D6uu56n9ttP+fu3/wC/y/40fbbT/n7t/wDv8v8AjXlmB6D8qMD0FHt32D6uu56n9ttP+fu3/wC/y/40fbbT/n7t/wDv8v8AjXlm0ego2j0FHt32D6uu56n9ttP+fu3/AO/y/wCNH220/wCfu3/7/L/jXlmB6CjA9B+VHt32D6uu56n9ttP+fu3/AO/y/wCNH220/wCfu3/7/L/jXlmB6D8qMD0H5Ue3fYPq67nqf220/wCfu3/7/L/jR9ttP+fu3/7/AC/415Zgeg/KjA9BR7d9g+rruep/bbT/AJ+7f/v8v+NH220/5+7f/v8AL/jXlm0ego2j0FHt32D6uu56n9ttP+fu3/7/AC/40fbbT/n7t/8Av8v+NeWYHoKMD0H5Ue3fYPq67nqf220/5+7f/v8AL/jRXlmB6D8qKPbvsH1ddxaKKKwNwooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//Z";
 
 /*
  * GET /api/selftest — runs one real refine on a built-in test picture with every model in
@@ -640,21 +696,23 @@ async function selfTest(request, env) {
     if (!success) return json(request, env, { error: "Too many tests. Wait a minute and try again." }, 429);
   }
   const results = [];
+  const testBytes = Uint8Array.from(atob(SELFTEST_JPEG_B64), (c) => c.charCodeAt(0));
+  const job = {
+    sceneBytes: testBytes, sceneType: "image/jpeg", sceneWidth: 504, sceneHeight: 378,
+    productBytes: testBytes, productType: "image/jpeg",
+    width: 1024, height: 768, seed: 7,
+    fluxPrompt: buildFluxRefinePrompt({}), sdPrompt: buildRefinePrompt({}),
+    strength: numberVar(env.REFINE_STRENGTH, 0.3, 0.05, 0.8),
+    guidance: numberVar(env.REFINE_GUIDANCE, 7.5, 1, 20),
+    steps: Math.round(numberVar(env.REFINE_STEPS, 20, 4, 20))
+  };
   for (const model of refineChain(env)) {
     const started = Date.now();
     try {
-      const output = await env.AI.run(model, {
-        prompt: buildRefinePrompt({}),
-        negative_prompt: REFINE_NEGATIVE_PROMPT,
-        image_b64: SELFTEST_JPEG_B64,
-        strength: numberVar(env.REFINE_STRENGTH, 0.3, 0.05, 0.8),
-        guidance: numberVar(env.REFINE_GUIDANCE, 7.5, 1, 20),
-        num_steps: Math.round(numberVar(env.REFINE_STEPS, 20, 4, 20)),
-        width: 512,
-        height: 384
-      });
-      const image = await imageBytesFromOutput(output);
-      results.push({ model, ok: true, ms: Date.now() - started, bytes: image.bytes.length, type: image.type });
+      const image = await imageBytesFromOutput(await runRefineModel(env, model, job));
+      const out = imageDimensions(image.bytes);
+      results.push({ model, ok: true, ms: Date.now() - started, bytes: image.bytes.length, type: image.type,
+        size: out ? `${out.width}x${out.height}` : null });
     } catch (error) {
       const detail = String((error && (error.message || error)) || "unknown").slice(0, 300);
       results.push({ model, ok: false, ms: Date.now() - started, error: detail, meaning: explainAiError(detail).message });
