@@ -36,8 +36,10 @@ const DEFAULT_REFINE_MODEL = "@cf/stabilityai/stable-diffusion-xl-base-1.0";
 // FLUX.2 klein 4B ≈ 26 neurons per output 512px tile → ~115 neurons per 1024px image
 // (~80+ images/day in the free 10,000). 9B ≈ 1,400+ neurons per image (~6–7/day) = backup.
 // Override with the Worker variable REFINE_MODELS (comma separated).
-const DEFAULT_REFINE_CHAIN = ["@cf/black-forest-labs/flux-2-klein-4b", "@cf/black-forest-labs/flux-2-klein-9b"];
-const VERSION = "2026-10-05-v11-flux-refine";
+// v14: 9B removed from the default chain — when 4B failed, waiting for 9B (slow, ~12x the neurons)
+// made customers wait 40 s+. Add it back with REFINE_MODELS if ever wanted.
+const DEFAULT_REFINE_CHAIN = ["@cf/black-forest-labs/flux-2-klein-4b"];
+const VERSION = "2026-10-07-v14-fast";
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const MAX_REFERENCE_INPUT_BYTES = 3 * 1024 * 1024;
 // Workers AI: "All input images must be smaller than 512x512."
@@ -81,7 +83,7 @@ function corsHeaders(request, env) {
   const headers = {
     "Access-Control-Allow-Methods": "POST, OPTIONS, GET",
     "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Expose-Headers": "X-Visualizer-Seed, X-Visualizer-Version, X-Visualizer-Model",
+    "Access-Control-Expose-Headers": "X-Visualizer-Seed, X-Visualizer-Version, X-Visualizer-Model, X-Visualizer-Timing",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin"
   };
@@ -653,21 +655,27 @@ async function generateRefine(request, env) {
   };
 
   const started = Date.now();
-  const budgetMs = numberVar(env.REFINE_BUDGET_MS, 30000, 5000, 120000);
+  const budgetMs = numberVar(env.REFINE_BUDGET_MS, 25000, 5000, 120000);
   const failures = [];
+  const timing = [];
   for (const model of chain) {
     for (let attempt = 1; attempt <= 2; attempt++) {
+      const t0 = Date.now();
       try {
         const output = await runRefineModel(env, model, job);
         const png = await imageBytesFromOutput(output);
-        const headers = { "X-Visualizer-Model": model };
+        timing.push(`${model.split("/").pop()}:ok:${Date.now() - t0}ms`);
+        const headers = { "X-Visualizer-Model": model, "X-Visualizer-Timing": timing.join(", ") };
         if (job.seed !== null) headers["X-Visualizer-Seed"] = String(job.seed);
         return imageResponse(request, env, png, headers);
       } catch (error) {
+        const took = Date.now() - t0;
         const detail = String((error && (error.message || error)) || "unknown").slice(0, 200);
-        failures.push(`${model}#${attempt}: ${detail}`);
-        console.warn("Refine attempt failed", model, attempt, detail);
-        if (!isTemporaryAiError(detail)) break;   // retry only busy / timeout
+        timing.push(`${model.split("/").pop()}:fail:${took}ms`);
+        failures.push(`${model}#${attempt} (${took} ms): ${detail}`);
+        console.warn("Refine attempt failed", model, attempt, took, detail);
+        // Retry only a quick "busy/timeout" answer; a slow failure would just double the wait.
+        if (!isTemporaryAiError(detail) || took > 8000) break;
       }
       if (Date.now() - started > budgetMs) break;
     }
