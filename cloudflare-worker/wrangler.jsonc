@@ -1,7 +1,5 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  // MUST match the Worker name in the Cloudflare dashboard, otherwise
-  // Workers Builds (GitHub auto-deploy) fails or creates a second Worker.
   "name": "murphy-bed-ai-visualizer-production",
   "main": "src/index.js",
   "compatibility_date": "2026-09-18",
@@ -9,20 +7,20 @@
   "ai": {
     "binding": "AI"
   },
-  // Server-side abuse protection: max 5 generations per visitor IP per minute.
   "ratelimits": [
     {
       "name": "RATE_LIMITER",
       "namespace_id": "4201",
-      "simple": { "limit": 5, "period": 60 }
+      "simple": {
+        "limit": 5,
+        "period": 60
+      }
     }
   ],
   "observability": {
     "enabled": true
   },
   "vars": {
-    // Comma separated. Wildcards allowed for subdomains, e.g. https://*.shopifypreview.com
-    // Add your store's xxxx.myshopify.com domain so theme preview / editor testing works.
-    "ALLOWED_ORIGINS": "https://islandmurphybeds.com,https://www.islandmurphybeds.com,https://*.shopifypreview.com"
+    "ALLOWED_ORIGINS": "https://islandmurphybeds.com,https://www.islandmurphybeds.com,https://murphybedplace.com,https://www.murphybedplace.com,https://*.shopifypreview.com"
   }
 }
